@@ -7,7 +7,7 @@ app.set("port", process.env.PORT || 3000);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -86,6 +86,6 @@ io.on("connection", (socket) => {
 });
 
 // start listening on our port
-server.listen(3000, () => {
+server.listen(3000, "0.0.0.0", () => {
   console.log("Server listening on port 3000");
 });
