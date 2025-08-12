@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://13.61.15.90:5173/", // Your frontend
+    origin: "http://13.61.15.90/", // Your frontend
     methods: ["GET", "POST", "PUT", "DESTROY"],
   })
 );
