@@ -1,0 +1,97 @@
+.tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 75px;
+  height: 75px;
+  position: relative;
+}
+
+.tile.light {
+  background-color: #ffffff;
+  display: flex;
+  width: 75px;
+  height: 75px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.tile.dark {
+  background-color: #803300;
+  display: flex;
+  width: 75px;
+  height: 75px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.tile.piece :hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.king-check {
+  position: relative;
+  z-index: 1;
+}
+
+.king-check::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 0, 0, 0.44);
+  filter: blur(10px);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+@keyframes mistPulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    filter: blur(8px);
+  }
+  50% {
+    opacity: 0.6;
+    filter: blur(14px);
+  }
+}
+
+/* Highlight for empty tile (dot) */
+.dot::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background-color: rgba(0, 0, 0, 0.4); /* semi-transparent dark dot */
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Highlight for a piece (circle outline) */
+.circle::after {
+  content: "";
+  width: 80%;
+  height: 80%;
+  border: 3px solid rgba(0, 0, 0, 0.5); /* semi-transparent dark ring */
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.piece.game {
+  width: 60px;
+  height: 60px;
+}
