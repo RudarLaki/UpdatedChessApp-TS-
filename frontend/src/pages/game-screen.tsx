@@ -1,7 +1,7 @@
 import "../styles/GameScreen.css";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import SideNav from "../components/app-comp/side-nav";
 import MyTimer from "../components/app-comp/Timer";
@@ -12,6 +12,7 @@ import Piece from "../logic/pieceLogic/Piece";
 
 import type { Move } from "../logic/boardLogic/moveLogic/Move";
 import { socketService } from "../services/socket-service";
+// import { gameService } from "../services/game-service";
 
 const myMap = new Map<string, number>();
 myMap.set("P", 1);
@@ -20,7 +21,16 @@ myMap.set("B", 3.5);
 myMap.set("R", 5);
 myMap.set("Q", 9);
 
-export default function GameScreen() {
+type GameNavState = {
+  time: number;
+  addition: number;
+};
+
+const GameScreen = () => {
+  const { state } = useLocation() as { state: GameNavState | null };
+  const addition = state?.addition ?? 0;
+  const matchTime = (state?.time ?? 6) * 60;
+
   const navigate = useNavigate();
   const [whiteEatenPieces, setWhiteEatenPieces] = useState<Piece[]>([]);
   const [blackEatenPieces, setBlackEatenPieces] = useState<Piece[]>([]);
@@ -31,7 +41,7 @@ export default function GameScreen() {
       }[]
     | null
   >(null);
-  const [onMove, setOnMove] = useState("White");
+  const [onMove, setOnMove] = useState<"White" | "Black" | null>(null);
   const [roomId, setRoomId] = useState("");
   const [playerColor, setPlayerColor] = useState<"Black" | "White" | null>(
     null
@@ -40,36 +50,43 @@ export default function GameScreen() {
 
   const userInfo = JSON.parse(localStorage.getItem("loginInfo")!);
 
-  const whiteTime = new Date();
-  whiteTime.setSeconds(whiteTime.getSeconds() + 600); // 10 minutes timer
-  const blackTime = new Date();
-  blackTime.setSeconds(blackTime.getSeconds() + 600); // 10 minutes timer
-
   useEffect(() => {
     socketService.connect("http://localhost:3000");
-    socketService.joinRoom(userInfo.id);
-    socketService.waitForOpponent();
+    socketService.joinRoom(userInfo.id, { matchTime, addition });
+
+    // socketService.waitForOpponent();
 
     socketService.onGameStart(
       (data: {
         roomId: string;
         players: { color: "Black" | "White"; userId: string }[];
       }) => {
-        setPlayerColor(
+        const user =
           data.players[0].userId == userInfo.id
-            ? data.players[0].color
-            : data.players[1].color
-        );
+            ? data.players[0]
+            : data.players[1];
+        // const opponent =
+        //   data.players[0].userId == userInfo.id
+        //     ? data.players[1]
+        //     : data.players[0];
+
+        setPlayerColor(user.color);
 
         setStatus(
-          `Game started in room ${data.roomId} — you play as ${
-            data.players[0].userId == userInfo.id
-              ? data.players[0].color
-              : data.players[1].color
-          }`
+          `Game started in room ${data.roomId} — you play as ${user.color}`
         );
         setRoomId(data.roomId);
-        navigate(`/game/${data.roomId}`, { replace: true });
+        // gameService.startGame(
+        //   user.color == "White" ? user.userId : opponent.userId,
+        //   user.color == "Black" ? user.userId : opponent.userId,
+        //   user.color,
+        //   data.roomId,
+        //   { matchTime, addition }
+        // );
+        navigate(`/game/${data.roomId}`, {
+          replace: true,
+          state: { time: state?.time ?? 6, addition: state?.addition ?? 0 },
+        });
         console.log(status);
       }
     );
@@ -100,8 +117,8 @@ export default function GameScreen() {
             />
             <div className="profile">
               <div className="username">
-                <span>MyUserName</span>
-                <span>(1234)</span>
+                <span>{userInfo.userName}</span>
+                <span>({userInfo.elo})</span>
               </div>
 
               <div className="eaten-pieces">
@@ -124,10 +141,7 @@ export default function GameScreen() {
               "clock-container " + (onMove == "Black" ? "on-move" : "wait")
             }
           >
-            <MyTimer
-              expiryTimestamp={blackTime}
-              isRunning={onMove == "Black"}
-            ></MyTimer>
+            <MyTimer start={matchTime} isRunning={onMove == "Black"}></MyTimer>
           </div>
         </div>
         <ChessBoard
@@ -154,8 +168,8 @@ export default function GameScreen() {
             />
             <div className="profile">
               <div className="username">
-                <span>MyUserName</span>
-                <span>(1234)</span>
+                <span>{userInfo.userName}</span>
+                <span>({userInfo.elo})</span>
               </div>
 
               <div className="eaten-pieces">
@@ -178,10 +192,7 @@ export default function GameScreen() {
               "clock-container " + (onMove == "White" ? "on-move" : "wait")
             }
           >
-            <MyTimer
-              expiryTimestamp={whiteTime}
-              isRunning={onMove == "White"}
-            ></MyTimer>
+            <MyTimer start={matchTime} isRunning={onMove == "White"}></MyTimer>
           </div>
         </div>
       </div>
@@ -230,4 +241,6 @@ export default function GameScreen() {
       </div> */}
     </div>
   );
-}
+};
+
+export default GameScreen;

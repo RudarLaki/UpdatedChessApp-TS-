@@ -5,17 +5,16 @@ interface AuthResponse {
   userName: string;
   token: string;
 }
-export class AuthService {
+class AuthService {
   register = async (
-    name: string,
-    lastName: string,
+    userName: string,
     email: string,
     password: string
   ): Promise<AuthResponse> => {
-    const res = await fetch(`${API_URL}/register`, {
+    const res = await fetch(API_URL + `/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, lastName, email, password }),
+      body: JSON.stringify({ userName, email, password }),
     });
 
     if (!res.ok) {
@@ -52,3 +51,5 @@ export class AuthService {
     localStorage.removeItem("token");
   };
 }
+
+export const authService = new AuthService();

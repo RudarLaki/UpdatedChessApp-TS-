@@ -7,8 +7,12 @@ class SocketService {
     this.socket = io(url);
   }
 
-  joinRoom(userId: string) {
-    this.socket?.emit("joinRoom", userId);
+  joinRoom(
+    userId: string,
+    timeControl: { matchTime: number; addition: number }
+  ) {
+    console.log(userId);
+    this.socket?.emit("joinRoom", userId, timeControl);
   }
 
   waitForOpponent() {

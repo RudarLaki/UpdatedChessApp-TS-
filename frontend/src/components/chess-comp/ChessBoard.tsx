@@ -30,9 +30,10 @@ import Tile from "./Tile";
 import { socketService } from "../../services/socket-service";
 
 type ChessBoardProps = {
-  setOnMove: Dispatch<SetStateAction<string>>;
+  setOnMove: Dispatch<SetStateAction<"White" | "Black" | null>>;
   setBlackEatenPieces: Dispatch<SetStateAction<Piece[]>>;
   setWhiteEatenPieces: Dispatch<SetStateAction<Piece[]>>;
+
   setMoveHistory: Dispatch<
     SetStateAction<
       | {
@@ -196,7 +197,9 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
       }
       setGameBoard(newBoard);
       updateBoardFromGame(newBoard);
-      setOnMove(newBoard.getCurrentPlayer().getAlliance().toString());
+      const onMove = newBoard.getCurrentPlayer().getAlliance().toString();
+      // Add 5 seconds to the player who just moved
+      setOnMove(onMove);
 
       if (newBoard.getCurrentPlayer().isCheckMate()) {
         //

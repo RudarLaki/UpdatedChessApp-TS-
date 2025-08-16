@@ -1,5 +1,5 @@
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
-import { ddb } from "../services/awsClient";
+import { ddb } from "../services/awsService";
 import { Request, Response } from "express";
 
 const USERS_TABLE_NAME = "Users";

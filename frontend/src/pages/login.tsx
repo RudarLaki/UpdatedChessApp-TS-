@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../styles/Auth.css";
-import { AuthService } from "../services/auth-service";
+import { authService } from "../services/auth-service";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -8,7 +8,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   //const [isLoading, setIsLoading] = useState(false);
   //const [error, setError] = useState(null);
-  const authService = new AuthService();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {

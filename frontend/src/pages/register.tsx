@@ -1,22 +1,19 @@
 // pages/Register.tsx
 import { useState } from "react";
 import "../styles/Auth.css";
-import { AuthService } from "../services/auth-service";
+import { authService } from "../services/auth-service";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   //const [userName, setUserName] = useState("");
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const authService = new AuthService();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(`Register:  ${name}${lastName}`, { email, password });
-    await authService.register(name, lastName, email, password);
+    await authService.register(userName, email, password);
     navigate("/");
   };
 
@@ -31,17 +28,8 @@ const Register = () => {
                 type="name"
                 placeholder="Name"
                 className="input"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="field input-field">
-              <input
-                type="lastName"
-                placeholder="Last Name"
-                className="input"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
               />
             </div>
             <div className="field input-field">

@@ -2,22 +2,23 @@ import { z } from "zod";
 
 export const ChessGameSchema = z.object({
   gameId: z.string(),
-  whiteUserId: z.string(),
-  blackUserId: z.string().min(3),
-  whiteUsername: z.string(),
-  blackUsername: z.string(),
-  whiteRating: z.number().optional(),
-  blackRating: z.number().optional(),
+  whitePlayerId: z.string(),
+  blackPlayerId: z.string().min(3),
+  whitePlayerUsername: z.string(),
+  blackPlayerUsername: z.string(),
+  whitePlayerRating: z.number().optional(),
+  blackPlayerRating: z.number().optional(),
   resultReason: z
     .enum(["checkmate", "resignation", "timeout", "draw", "aborted"])
-    .optional(),
+    .nullable(),
   roomId: z.string(),
-  createdAt: z.date(),
-  finishedAt: z.date(),
-  winner: z.number(),
-  chatId: z.number(),
+  // sentAt: z.coerce.date(),
+  // finishedAt: z.coerce.date().nullable,
+  sentAt: z.string(),
+  finishedAt: z.string(),
+  winner: z.number().nullable(),
+  chatId: z.number().nullable(),
   moves: z.array(z.string()), // e.g., ["e4", "e5", "Nf3", ...] in PGN or SAN notation
-  currentFen: z.string(), // FEN string to track live board state
   status: z.enum(["waiting", "active", "finished", "aborted"]),
   turn: z.enum(["White", "Black"]), // who should play next
   timeControl: z.object({

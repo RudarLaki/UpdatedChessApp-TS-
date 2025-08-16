@@ -5,7 +5,7 @@ export const GameChatSchema = z.object({
   roomId: z.string(),
   senderId: z.string(),
   message: z.string().min(1),
-  sentAt: z.string().datetime(),
+  sentAt: z.coerce.date(),
 });
 
 export type GameChat = z.infer<typeof GameChatSchema>;

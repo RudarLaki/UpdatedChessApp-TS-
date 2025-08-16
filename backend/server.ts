@@ -1,6 +1,9 @@
 import app from "./app";
 import http from "http";
 import { Server } from "socket.io";
+import crypto from "crypto";
+
+import { gameService } from "./services/gameService";
 
 // set our port
 app.set("port", process.env.PORT || 3000);
@@ -24,18 +27,19 @@ io.on("connection", (socket) => {
   console.log("Connected socket IDs:", allSocketIds);
   console.log("User connected", socket.id);
 
-  socket.on("joinRoom", (userId) => {
+  socket.on("joinRoom", (userId, timeControl) => {
     if (!userId) {
       socket.emit("error", "User ID required");
       return;
     }
+
     // Check if someone is waiting
     if (waitingPlayers.length > 0) {
       // Match with waiting player
       const waitingPlayer = waitingPlayers.shift()!;
 
       // Create a unique room id, e.g. combine user ids sorted
-      const roomId = [waitingPlayer.userId, userId].sort().join("-");
+      const roomId = crypto.randomBytes(6).toString("base64url"); // ~8 chars, URL safe
 
       rooms[roomId] = {
         id: roomId,
@@ -44,12 +48,22 @@ io.on("connection", (socket) => {
           { userId: userId, color: "White" },
         ],
       };
+      const whitePlayerId =
+        rooms[roomId].players[0].color == "White"
+          ? rooms[roomId].players[0].userId
+          : rooms[roomId].players[0].userId;
+
+      const blackPlayerId =
+        rooms[roomId].players[0].color == "Black"
+          ? rooms[roomId].players[0].userId
+          : rooms[roomId].players[0].userId;
 
       // Join sockets to the room
       socket.join(roomId);
       io.sockets.sockets.get(waitingPlayer.socketId)?.join(roomId);
 
       // Notify both players to start game
+      gameService.startGame(whitePlayerId, blackPlayerId, roomId, timeControl);
       io.to(roomId).emit("gameStart", {
         roomId,
         players: rooms[roomId].players,

@@ -1,6 +1,6 @@
 const API_URL = "http://localhost:3000/user/";
 
-export class UserService {
+class UserService {
   getProfile = async (id: number) => {
     const res = await fetch(`${API_URL}/profile:${id}`, {
       method: "GET",
@@ -14,3 +14,4 @@ export class UserService {
     return res.json();
   };
 }
+export const userService = new UserService();

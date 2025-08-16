@@ -1,8 +1,12 @@
+import { useState } from "react";
 import SideNav from "../components/app-comp/side-nav";
+import StartGameDialog from "../components/app-comp/StartGameDialog";
 import "../styles/Home.css";
 
 export const Home = () => {
   //const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="page-container">
       <div
@@ -22,10 +26,12 @@ export const Home = () => {
       <div className="base-container">
         <section className="game-section">
           <div className="chessboard-placeholder"></div>
-
+          <StartGameDialog isOpen={isOpen} setIsOpen={setIsOpen} />
           {/* Start Game and Play Against Bot Buttons */}
           <div className="game-buttons">
-            <button className="play-button">Play Now</button>
+            <button className="play-button" onClick={() => setIsOpen(true)}>
+              Play Now
+            </button>
 
             <button className="play-button">Play Bot</button>
           </div>

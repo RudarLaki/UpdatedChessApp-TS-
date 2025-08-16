@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 export const UserSchema = z.object({
-  userId: z.string(),
-  userEmail: z.email(),
+  id: z.string(),
+  email: z.email(),
 
-  username: z.string().min(3),
-  passwordHash: z.string().min(60), // bcrypt hashes are 60 chars
-  createdAt: z.date(), // ISO string
+  userName: z.string().min(3),
+  password: z.string().min(60), // bcrypt hashes are 60 chars
+  sentAt: z.coerce.date(),
   lastActiveAt: z.date().optional(),
 
   elo: z.number().default(1200), // Starting ELO

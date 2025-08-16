@@ -1,0 +1,100 @@
+/* PlayNowDialog.css */
+
+/* Overlay */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Panel / Modal */
+.dialog-panel {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  max-width: 24rem; /* 384px */
+  width: 100%;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+/* Title */
+.dialog-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937; /* gray-900 */
+}
+
+/* Description */
+.dialog-description {
+  font-size: 0.875rem;
+  color: #4b5563; /* gray-600 */
+}
+
+/* Labels */
+.dialog-label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #374151; /* gray-700 */
+  gap: 0.25rem;
+}
+
+/* Inputs / Selects */
+.dialog-input,
+.dialog-select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dialog-input:focus,
+.dialog-select:focus {
+  border-color: #3b82f6; /* blue-500 */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Buttons Container */
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* Cancel Button */
+.dialog-cancel {
+  padding: 0.5rem 1rem;
+  background-color: #d1d5db; /* gray-300 */
+  color: #1f2937;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.dialog-cancel:hover {
+  background-color: #9ca3af; /* gray-400 */
+}
+
+/* Start Game Button */
+.dialog-start {
+  padding: 0.5rem 1rem;
+  background-color: #2563eb; /* blue-600 */
+  color: #ffffff;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.dialog-start:hover {
+  background-color: #1d4ed8; /* blue-700 */
+}

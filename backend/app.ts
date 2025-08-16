@@ -4,6 +4,7 @@ import cors from "cors";
 
 import authRoutes from "./routes/authRoutes";
 import usersRoutes from "./routes/usersRoutes";
+import gameRoutes from "./routes/gameRoutes";
 
 // create the Express app
 const app = express();
@@ -12,7 +13,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://13.61.15.90", // Your frontend
+    //origin: "http://rudechess.xyz", // Your frontend
+    origin: ["http://rudechess.xyz", "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DESTROY"],
   })
 );
@@ -23,6 +25,7 @@ app.use(express.json());
 // setup a friendly greeting for the root route
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
+app.use("/game", gameRoutes);
 
 // send 404 if no other route matched
 app.use((req, res) => {
