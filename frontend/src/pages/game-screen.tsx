@@ -8,9 +8,9 @@ import MyTimer from "../components/app-comp/Timer";
 import MoveHistory from "../components/app-comp/MoveHistory";
 import ChessBoard from "../components/chess-comp/ChessBoard";
 import PieceComp from "../components/chess-comp/Piece";
-import Piece from "../logic/pieceLogic/Piece";
+import Piece from "../../../sharedGameLogic/pieceLogic/Piece";
 
-import type { Move } from "../logic/boardLogic/moveLogic/Move";
+import type { Move } from "../../../sharedGameLogic/boardLogic/moveLogic/Move";
 import { socketService } from "../services/socket-service";
 // import { gameService } from "../services/game-service";
 

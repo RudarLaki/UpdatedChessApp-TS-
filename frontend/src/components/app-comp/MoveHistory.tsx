@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import type { Move } from "../../logic/boardLogic/moveLogic/Move";
+import type { Move } from "../../../../sharedGameLogic/boardLogic/moveLogic/Move";
 import "../../styles/MoveHistory.css";
 
 type MoveHistoryProps = {

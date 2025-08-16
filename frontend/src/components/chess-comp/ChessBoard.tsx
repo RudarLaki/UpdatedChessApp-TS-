@@ -11,19 +11,22 @@ import {
   MoveFactory,
   PawnPromotionMove,
   type Move,
-} from "../../logic/boardLogic/moveLogic/Move";
+} from "../../../../sharedGameLogic/boardLogic/moveLogic/Move";
 
-import Board from "../../logic/boardLogic/Board";
-import { MoveStatus } from "../../logic/boardLogic/moveLogic/MoveStatus";
-import { Alliance, type AllianceType } from "../../logic/boardLogic/Alliance";
-import type MoveTransition from "../../logic/boardLogic/moveLogic/MoveTransition";
+import Board from "../../../../sharedGameLogic/boardLogic/Board";
+import { MoveStatus } from "../../../../sharedGameLogic/boardLogic/moveLogic/MoveStatus";
+import {
+  Alliance,
+  type AllianceType,
+} from "../../../../sharedGameLogic/boardLogic/Alliance";
+import type MoveTransition from "../../../../sharedGameLogic/boardLogic/moveLogic/MoveTransition";
 
-import type Piece from "../../logic/pieceLogic/Piece";
-import King from "../../logic/pieceLogic/King";
-import Queen from "../../logic/pieceLogic/Queen";
-import Rook from "../../logic/pieceLogic/Rook";
-import Bishop from "../../logic/pieceLogic/Bishop";
-import Knight from "../../logic/pieceLogic/Knight";
+import type Piece from "../../../../sharedGameLogic/pieceLogic/Piece";
+import King from "../../../../sharedGameLogic/pieceLogic/King";
+import Queen from "../../../../sharedGameLogic/pieceLogic/Queen";
+import Rook from "../../../../sharedGameLogic/pieceLogic/Rook";
+import Bishop from "../../../../sharedGameLogic/pieceLogic/Bishop";
+import Knight from "../../../../sharedGameLogic/pieceLogic/Knight";
 
 import PromotionPanel from "./PromotionPanel";
 import Tile from "./Tile";
