@@ -83,6 +83,7 @@ const GameScreen = () => {
         //   data.roomId,
         //   { matchTime, addition }
         // );
+        localStorage.setItem("game", JSON.stringify({ roomId: data.roomId }));
         navigate(`/game/${data.roomId}`, {
           replace: true,
           state: { time: state?.time ?? 6, addition: state?.addition ?? 0 },

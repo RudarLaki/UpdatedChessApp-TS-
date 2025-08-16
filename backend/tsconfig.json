@@ -6,8 +6,12 @@
     "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["../sharedGameLogic/*"]
+    }
   },
-  "include": ["**/*.ts"],
+  "include": ["backend/**/*", "../sharedGameLogic/**/*"],
   "exclude": ["node_modules"]
 }

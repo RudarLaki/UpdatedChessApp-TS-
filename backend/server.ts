@@ -81,7 +81,8 @@ io.on("connection", (socket) => {
 
   socket.on(
     "makeMove",
-    (roomId: string, moveCordinations: { from: number; to: number }) => {
+    async (roomId: string, moveCordinations: { from: number; to: number }) => {
+      await gameService.makeMove(roomId, moveCordinations);
       socket.to(roomId).emit("getMove", moveCordinations);
     }
   );
