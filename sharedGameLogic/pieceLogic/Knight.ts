@@ -1,4 +1,4 @@
-import Piece from "./Piece.js";
+import Piece from "./Piece";
 import BoardUtils from "../boardLogic/BoardUtils";
 import { MajorMove, AttackMove, Move } from "../boardLogic/moveLogic/Move";
 import type { AllianceType } from "../boardLogic/Alliance.js";
