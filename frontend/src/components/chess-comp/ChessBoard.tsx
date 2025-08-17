@@ -40,14 +40,16 @@ type ChessBoardProps = {
   setMoveHistory: Dispatch<
     SetStateAction<
       | {
-          whiteMove: Move | null;
-          blackMove: Move | null;
+          from: number;
+          to: number;
+          notation: string;
         }[]
       | null
     >
   >;
   playerColor: "Black" | "White" | null;
   roomId: string;
+  startBoardState: Board | null;
 };
 
 const ChessBoard: React.FC<ChessBoardProps> = ({
@@ -57,6 +59,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   setMoveHistory,
   playerColor,
   roomId,
+  startBoardState,
 }) => {
   const [selectedTile, setSelectedTile] = useState<number | null>(null);
   const [boardState, setBoardState] = useState(new Array(64).fill(null));
@@ -76,10 +79,12 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   });
 
   useEffect(() => {
-    const initialBoard = Board.createStandardBoard();
+    const initialBoard = startBoardState
+      ? startBoardState
+      : Board.createStandardBoard();
     setGameBoard(initialBoard);
     updateBoardFromGame(initialBoard);
-  }, []);
+  }, [startBoardState]);
 
   useEffect(() => {
     if (!socketService.socket) return;
@@ -104,6 +109,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   };
 
   const handleTileClick = (tileIndex: number) => {
+    console.log(playerColor);
     if (
       !gameBoard ||
       playerColor !== gameBoard.getCurrentPlayer().getAlliance().toString()
@@ -139,6 +145,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
         from: selectedTile,
         to: tileIndex,
       };
+      console.log(roomId);
       socketService.sendMove(roomId, moveData);
 
       setSelectedTile(null);
@@ -159,21 +166,11 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
       let newBoard;
 
       setMoveHistory((prev) => {
-        if (!prev || prev.length === 0) {
-          // Start history with white move
-          return [{ whiteMove: move, blackMove: null }];
-        }
-
-        const lastMove = prev[prev.length - 1];
-
-        // If last move's blackMove is empty, add black move to it
-        if (lastMove.blackMove === null) {
-          const updatedLastMove = { ...lastMove, blackMove: move };
-          return [...prev.slice(0, -1), updatedLastMove];
-        }
-
         // Else start a new move with whiteMove
-        return [...prev, { whiteMove: move, blackMove: null }];
+        return [
+          ...(prev ?? []),
+          { from: from, to: to, notation: move.toString() },
+        ];
       });
 
       if (

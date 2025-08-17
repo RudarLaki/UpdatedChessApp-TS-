@@ -51,12 +51,12 @@ io.on("connection", (socket) => {
       const whitePlayerId =
         rooms[roomId].players[0].color == "White"
           ? rooms[roomId].players[0].userId
-          : rooms[roomId].players[0].userId;
+          : rooms[roomId].players[1].userId;
 
       const blackPlayerId =
         rooms[roomId].players[0].color == "Black"
           ? rooms[roomId].players[0].userId
-          : rooms[roomId].players[0].userId;
+          : rooms[roomId].players[1].userId;
 
       // Join sockets to the room
       socket.join(roomId);
@@ -76,6 +76,16 @@ io.on("connection", (socket) => {
       // No one waiting - add this user to waiting list
       waitingPlayers.push({ userId, socketId: socket.id });
       console.log(`User ${userId} is waiting for opponent`);
+    }
+  });
+  socket.on("rejoin-room", ({ roomId, userId }) => {
+    const room = rooms[roomId];
+    if (room && room.players.find((p) => p.userId === userId)) {
+      socket.join(roomId);
+      socket.emit("rejoined", { roomId, players: room.players });
+      console.log(`User ${userId} rejoined room ${roomId}`);
+    } else {
+      socket.emit("error", "Room not found or user not part of it");
     }
   });
 

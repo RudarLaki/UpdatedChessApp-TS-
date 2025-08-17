@@ -68,7 +68,6 @@ const StartGameDialog: FC<StartGameDialogProps> = ({ isOpen, setIsOpen }) => {
           <button
             className="dialog-start"
             onClick={() => {
-              console.log(addition);
               navigate("/game", { state: { time, addition } });
             }}
           >

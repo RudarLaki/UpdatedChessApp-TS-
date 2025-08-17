@@ -104,14 +104,6 @@ class GameService {
     const gameId = exist.Items[0].gameId;
     const moveHistory = exist.Items[0].moveHistory;
 
-    const updatedMoveHistory = [
-      ...moveHistory,
-      {
-        from: moveCordinations.from,
-        to: moveCordinations.to,
-      },
-    ];
-
     const gameBoard = this.createBoardFromDB(boardState);
     const move = MoveFactory.createMove(
       gameBoard,
@@ -128,6 +120,14 @@ class GameService {
       } else {
         newBoard = transition.getBoard();
       }
+      const updatedMoveHistory = [
+        ...moveHistory,
+        {
+          from: moveCordinations.from,
+          to: moveCordinations.to,
+          notation: move.toString(),
+        },
+      ];
 
       // const onMove = newBoard.getCurrentPlayer().getAlliance().toString();
       // // Add 5 seconds to the player who just moved

@@ -36,7 +36,6 @@ const login = async (req: Request, res: Response) => {
     const matchingPass = await userService.loginUser(password, user);
     if (!matchingPass)
       return res.status(401).json({ message: "invalid password" });
-    console.log(user);
     return res.status(201).json({
       message: "user logged in successfully",
       id: user.id,

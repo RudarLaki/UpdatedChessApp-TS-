@@ -10,8 +10,9 @@ import ChessBoard from "../components/chess-comp/ChessBoard";
 import PieceComp from "../components/chess-comp/Piece";
 import Piece from "../../../sharedGameLogic/pieceLogic/Piece";
 
-import type { Move } from "../../../sharedGameLogic/boardLogic/moveLogic/Move";
 import { socketService } from "../services/socket-service";
+import { gameService } from "../services/game-service";
+import type Board from "../../../sharedGameLogic/boardLogic/Board";
 // import { gameService } from "../services/game-service";
 
 const myMap = new Map<string, number>();
@@ -36,8 +37,9 @@ const GameScreen = () => {
   const [blackEatenPieces, setBlackEatenPieces] = useState<Piece[]>([]);
   const [moveHistory, setMoveHistory] = useState<
     | {
-        whiteMove: Move | null;
-        blackMove: Move | null;
+        from: number;
+        to: number;
+        notation: string;
       }[]
     | null
   >(null);
@@ -47,56 +49,73 @@ const GameScreen = () => {
     null
   );
   const [status, setStatus] = useState("Waiting for opponent...");
-
   const userInfo = JSON.parse(localStorage.getItem("loginInfo")!);
+  const [boardState, setBoardState] = useState<null | Board>(null);
 
   useEffect(() => {
     socketService.connect("http://localhost:3000");
-    socketService.joinRoom(userInfo.id, { matchTime, addition });
 
-    // socketService.waitForOpponent();
+    const storedRoomId = localStorage.getItem("roomId");
+    if (storedRoomId) {
+      console.log("Reconnecting to room:", storedRoomId);
 
-    socketService.onGameStart(
-      (data: {
-        roomId: string;
-        players: { color: "Black" | "White"; userId: string }[];
-      }) => {
-        const user =
-          data.players[0].userId == userInfo.id
-            ? data.players[0]
-            : data.players[1];
-        // const opponent =
-        //   data.players[0].userId == userInfo.id
-        //     ? data.players[1]
-        //     : data.players[0];
+      // Step 1: rejoin socket room
+      socketService.reconnect(storedRoomId, userInfo.id);
 
-        setPlayerColor(user.color);
+      // Step 2: request game state from backend
+      (async () => {
+        const res = await gameService.requestGameState(storedRoomId);
+        if (res) {
+          const board: Board = gameService.createBoardFromDB(res.boardState);
+          setBoardState(board);
 
-        setStatus(
-          `Game started in room ${data.roomId} — you play as ${user.color}`
-        );
-        setRoomId(data.roomId);
-        // gameService.startGame(
-        //   user.color == "White" ? user.userId : opponent.userId,
-        //   user.color == "Black" ? user.userId : opponent.userId,
-        //   user.color,
-        //   data.roomId,
-        //   { matchTime, addition }
-        // );
-        localStorage.setItem("game", JSON.stringify({ roomId: data.roomId }));
-        navigate(`/game/${data.roomId}`, {
-          replace: true,
-          state: { time: state?.time ?? 6, addition: state?.addition ?? 0 },
-        });
-        console.log(status);
-      }
-    );
+          setMoveHistory(res.moveHistory);
+          setOnMove(res.moveHistory?.length % 2 == 0 ? "White" : "Black");
+          setStatus(`Rejoined game in room ${storedRoomId}`);
+          console.log(res.whitePlayerId, userInfo.id);
+          setPlayerColor(res.whitePlayerId == userInfo.id ? "White" : "Black");
+          setRoomId(storedRoomId);
+          navigate(`/game/${storedRoomId}`, {
+            replace: true,
+            state: { time: state?.time ?? 6, addition: state?.addition ?? 0 },
+          });
+          console.log(status);
+        }
+      })();
+    }
+    // Only joinRoom if this is a *new* game
+    else {
+      socketService.joinRoom(userInfo.id, { matchTime, addition });
 
-    // Optionally cleanup on unmount:
+      socketService.onGameStart(
+        (data: {
+          roomId: string;
+          players: { color: "Black" | "White"; userId: string }[];
+        }) => {
+          const user =
+            data.players[0].userId == userInfo.id
+              ? data.players[0]
+              : data.players[1];
+
+          setPlayerColor(user.color);
+          setStatus(
+            `Game started in room ${data.roomId} — you play as ${user.color}`
+          );
+          setRoomId(data.roomId);
+
+          localStorage.setItem("roomId", data.roomId); // simpler: just store string
+          navigate(`/game/${data.roomId}`, {
+            replace: true,
+            state: { time: state?.time ?? 6, addition: state?.addition ?? 0 },
+          });
+        }
+      );
+    }
+
     return () => {
-      socketService.disconnect(); // if you have this method
+      socketService.disconnect();
     };
-  }, []); // <---- here!
+  }, []);
 
   return (
     <div className="game-screen">
@@ -152,6 +171,7 @@ const GameScreen = () => {
           setOnMove={setOnMove}
           playerColor={playerColor}
           roomId={roomId}
+          startBoardState={boardState}
         />
         <div className="info-bar">
           <div className="user-info">

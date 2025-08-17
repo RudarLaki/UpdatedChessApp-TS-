@@ -11,19 +11,9 @@ class SocketService {
     userId: string,
     timeControl: { matchTime: number; addition: number }
   ) {
-    console.log(userId);
     this.socket?.emit("joinRoom", userId, timeControl);
   }
 
-  waitForOpponent() {
-    this.socket?.on("waiting", (msg: string) => {
-      console.log(msg);
-    });
-  }
-
-  onPlayerJoined(callback: (playerId: string) => void) {
-    this.socket?.on("playerJoined", callback);
-  }
   onGameStart(
     callback: (data: {
       roomId: string;
@@ -45,6 +35,12 @@ class SocketService {
   }
   off() {
     this.socket?.off("getMove");
+  }
+  reconnect(roomId: string, userId: string) {
+    this.socket?.emit("rejoin-room", {
+      roomId,
+      userId,
+    });
   }
   disconnect() {
     this.socket?.disconnect();

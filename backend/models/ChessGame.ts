@@ -29,7 +29,7 @@ export const ChessGameSchema = z.object({
     z.object({
       from: z.number().min(0).max(63),
       to: z.number().min(0).max(63),
-      piece: z.string(),
+      notation: z.string(),
     })
   ),
   resultReason: z
