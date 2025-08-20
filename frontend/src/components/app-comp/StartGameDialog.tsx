@@ -22,7 +22,7 @@ const StartGameDialog: FC<StartGameDialogProps> = ({
   setIsOpen,
   botOrPlayer,
 }) => {
-  const [time, setTime] = useState(600);
+  const [time, setTime] = useState(10);
   const [addition, setAddition] = useState(0);
 
   const [opponent, setOpponent] = useState("");

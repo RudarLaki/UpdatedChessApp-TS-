@@ -105,18 +105,35 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   }, [botMove, botOrPlayer]);
 
   useEffect(() => {
-    if (botOrPlayer == "bot") {
-      return;
-    }
-    if (!socketService.socket) return;
+    if (movesForBotRef.current.length == 0) return;
+    const runBotMove = async () => {
+      if (
+        botOrPlayer === "bot" &&
+        playerColor !== gameBoard?.getCurrentPlayer().getAlliance().toString()
+      ) {
+        const bestMove = await aiBotService.makeMove(
+          roomId,
+          movesForBotRef.current
+        );
+        movesForBotRef.current.push(bestMove);
+        setBotMove(bestMove);
+        return;
+      }
 
-    // subscribe
-    socketService.getMove((getMoveRequest: GetMoveRequest) => {
-      applyMove(getMoveRequest.moveData);
-    });
-    return () => {
-      socketService?.off();
+      if (!socketService.socket) return;
+
+      // subscribe
+      socketService.getMove((getMoveRequest: GetMoveRequest) => {
+        applyMove(getMoveRequest.moveData);
+      });
+
+      return () => {
+        socketService?.off();
+      };
     };
+
+    runBotMove();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameBoard]);
 
   const updateBoardFromGame = (gameBoard: Board) => {
@@ -165,19 +182,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
         roomId,
         moveData: { from: selectedTile, to: tileIndex },
       };
-      if (botOrPlayer == "bot") {
-        const moveUci = indexToSquare(selectedTile) + indexToSquare(tileIndex);
-        movesForBotRef.current.push(moveUci);
-        const bestMove = await aiBotService.makeMove(
-          roomId,
-          movesForBotRef.current
-        );
-        movesForBotRef.current.push(bestMove);
-        setBotMove(bestMove);
-      } else {
-        socketService.sendMove(sendMoveRequest);
-      }
-
+      if (botOrPlayer == "player") socketService.sendMove(sendMoveRequest);
       setSelectedTile(null);
       setHighlightedMoves([]);
 
@@ -230,6 +235,8 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
       // Add 5 seconds to the player who just moved
       setOnMove(onMove);
       if (onMove == playerColor) setBotMove("");
+      if (botOrPlayer == "bot" && playerColor !== onMove)
+        movesForBotRef.current.push(indexToSquare(from) + indexToSquare(to));
 
       if (newBoard.getCurrentPlayer().isCheckMate()) {
         //

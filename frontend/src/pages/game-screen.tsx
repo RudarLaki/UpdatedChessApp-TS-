@@ -33,7 +33,7 @@ type GameNavState = {
 const GameScreen = () => {
   const { state } = useLocation() as { state: GameNavState | null };
   const addition = state?.addition ?? 0;
-  const matchTime = (state?.matchTime ?? 6) * 60;
+  const matchTime = state?.matchTime ?? 6;
   const botOrPlayer = state?.botOrPlayer ?? "player";
   const opponent = state?.opponent ?? "random";
 
@@ -127,6 +127,7 @@ const GameScreen = () => {
     return () => {
       socketService.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -149,6 +150,7 @@ const GameScreen = () => {
     };
 
     startBotGame();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -195,7 +197,10 @@ const GameScreen = () => {
               "clock-container " + (onMove == "Black" ? "on-move" : "wait")
             }
           >
-            <MyTimer start={matchTime} isRunning={onMove == "Black"}></MyTimer>
+            <MyTimer
+              start={matchTime * 60}
+              isRunning={onMove == "Black"}
+            ></MyTimer>
           </div>
         </div>
         <ChessBoard
@@ -248,7 +253,10 @@ const GameScreen = () => {
               "clock-container " + (onMove == "White" ? "on-move" : "wait")
             }
           >
-            <MyTimer start={matchTime} isRunning={onMove == "White"}></MyTimer>
+            <MyTimer
+              start={matchTime * 60}
+              isRunning={onMove == "White"}
+            ></MyTimer>
           </div>
         </div>
       </div>
