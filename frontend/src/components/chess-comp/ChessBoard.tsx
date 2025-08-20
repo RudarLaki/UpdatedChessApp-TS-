@@ -101,6 +101,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   useEffect(() => {
     if (botOrPlayer !== "bot" || botMove == "") return;
     applyMove(uciToIndex(botMove));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [botMove, botOrPlayer]);
 
   useEffect(() => {

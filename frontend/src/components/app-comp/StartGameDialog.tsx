@@ -4,7 +4,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { useEffect, useState, type FC } from "react";
+import { useState, type FC } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "../../styles/StartGameDialog.css";
