@@ -35,7 +35,6 @@ export default class Player {
     throw new Error("Error: No king found!");
   }
 
-  // Abstract methods to be implemented in subclasses
   getQueenCastleMove(): Move | null {
     throw new Error("Must be implemented by subclass");
   }

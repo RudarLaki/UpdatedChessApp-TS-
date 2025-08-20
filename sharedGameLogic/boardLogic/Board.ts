@@ -8,7 +8,7 @@ import Tile from "./Tile";
 import BlackPlayer from "./playerLogic/BlackPlayer";
 import WhitePlayer from "./playerLogic/WhitePlayer";
 
-import { List, Map as ImmutableMap } from "immutable"; // Using Immutable.js
+import { List, Map as ImmutableMap } from "immutable";
 import { Move } from "./moveLogic/Move";
 import type Piece from "../pieceLogic/Piece";
 import { Alliance, type AllianceType } from "./Alliance";
@@ -92,8 +92,6 @@ export default class Board {
     builder.setPiece(new Pawn(14, Alliance.BLACK));
     builder.setPiece(new Pawn(15, Alliance.BLACK));
 
-    // White Layout
-
     builder.setPiece(new Rook(63, Alliance.WHITE));
     builder.setPiece(new Knight(62, Alliance.WHITE));
     builder.setPiece(new Bishop(61, Alliance.WHITE));
@@ -117,12 +115,11 @@ export default class Board {
   createGameBoard(builder: InstanceType<typeof Board.Builder>): List<Tile> {
     const tiles = new Array(64);
     for (let i = 0; i < 64; i++) {
-      tiles[i] = Tile.createTile(i, builder.boardConfig.get(i)!); // Assuming boardConfig is a Map
+      tiles[i] = Tile.createTile(i, builder.boardConfig.get(i)!);
     }
-    return List(tiles); // Return an immutable list of tiles
+    return List(tiles);
   }
 
-  // Placeholder for your actual implementation of this method
   calculateLegalMoves(pieces: Piece[]) {
     const legalMoves: Move[] = [];
     pieces.forEach((piece) => {
@@ -130,11 +127,9 @@ export default class Board {
       legalMoves.push(...moves);
     });
 
-    // Logic to calculate legal moves for the given pieces
     return List(legalMoves);
   }
 
-  // Placeholder for your actual implementation of this method
   calculateActivePieces(gameBoard: List<Tile>, alliance: AllianceType) {
     const activePieces: Piece[] = [];
     gameBoard.forEach((tile: Tile) => {
@@ -145,7 +140,6 @@ export default class Board {
         activePieces.push(tile.getPiece()!);
     });
 
-    // Logic to calculate legal moves for the given pieces
     return activePieces;
   }
 

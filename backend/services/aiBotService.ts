@@ -29,14 +29,14 @@ class AiBotService {
     );
 
     const engine = new StockfishProcess({
-      enginePath: enginePath, // make sure path is correct
+      enginePath: enginePath,
       threads: 2,
       hash: 256,
       skillLevel: Math.max(0, Math.min(20, level)),
     });
     await engine.ensureReady();
 
-    this.engines.set(roomId, engine); // keep it alive for this game
+    this.engines.set(roomId, engine);
 
     const object: ChessGame = {
       gameId: crypto.randomUUID(),
@@ -55,7 +55,7 @@ class AiBotService {
       winner: null,
       chatId: null,
       status: "active",
-      turn: "White", // who should play next
+      turn: "White",
       timeControl: { initial: 0, increment: 0 },
     };
     await ddb.send(
@@ -70,12 +70,10 @@ class AiBotService {
     const engine = this.engines.get(roomId);
     if (!engine) throw new Error("Engine not running for this game");
 
-    // Set current position from move history
     await engine.setPosition({ moves });
 
-    // Ask for AI move (movetime = 1s)
     const bestMove = await engine.go({ movetime: 1000 });
-    return bestMove; // UCI format, e.g., "e7e5" or "e7e8q" for promotion
+    return bestMove;
   };
 
   close = (roomId: string) => {

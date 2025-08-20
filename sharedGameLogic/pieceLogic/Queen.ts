@@ -3,7 +3,7 @@ import { MajorMove, AttackMove, Move } from "../boardLogic/moveLogic/Move";
 import type Board from "../boardLogic/Board";
 import type { AllianceType } from "../boardLogic/Alliance";
 
-const CANDIDATE_DIRECTIONS = [-9, -8, -7, -1, 1, 7, 8, 9]; // All directions
+const CANDIDATE_DIRECTIONS = [-9, -8, -7, -1, 1, 7, 8, 9];
 
 export default class Queen extends Piece {
   constructor(piecePosition: number, pieceAlliance: AllianceType) {
@@ -29,7 +29,7 @@ export default class Queen extends Piece {
           if (piece.pieceAlliance !== this.pieceAlliance) {
             legalMoves.push(new AttackMove(board, this, current, piece));
           }
-          break; // Blocked after capture or same-side piece
+          break;
         }
       }
     }

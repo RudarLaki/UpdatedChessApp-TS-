@@ -18,7 +18,7 @@ const reconnect = async (req: Request, res: Response) => {
     const exist = await ddb.send(
       new QueryCommand({
         TableName: "Game",
-        IndexName: "roomId-index", // must match the GSI name
+        IndexName: "roomId-index",
         KeyConditionExpression: "roomId = :roomId",
         ExpressionAttributeValues: {
           ":roomId": roomId,
@@ -29,7 +29,7 @@ const reconnect = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Game not found" });
     }
 
-    const game = exist.Items[0]; // the game record
+    const game = exist.Items[0];
     const { boardState, moveHistory, whitePlayerId, blackPlayerId } = game;
 
     return res.status(200).json({

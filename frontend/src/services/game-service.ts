@@ -29,7 +29,7 @@ class GameService {
       }
 
       const data = await res.json();
-      return data; // should be { board, moveHistory, players, ... }
+      return data;
     } catch (err) {
       console.error("Error in requestGameState:", err);
       throw err;
@@ -39,14 +39,12 @@ class GameService {
   createBoardFromDB = (gameState: GameState): Board => {
     const builder = new Board.Builder();
 
-    // Place all pieces
     gameState.pieces.forEach((p: SerializedPiece) => {
       builder.setPiece(
         PieceFactory.create(p.piece, p.piecePosition, p.pieceAlliance)
       );
     });
 
-    // Set turn
     builder.setNextMoveMaker(
       gameState.turn === "White" ? Alliance.WHITE : Alliance.BLACK
     );

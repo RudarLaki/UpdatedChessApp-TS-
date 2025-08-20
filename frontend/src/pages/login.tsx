@@ -7,14 +7,10 @@ import type { LoginRequest } from "../../../sharedGameLogic/types/auth";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const [isLoading, setIsLoading] = useState(false);
-  //const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    //setIsLoading(true);
-    //setError(null);
 
     try {
       const loginRequest: LoginRequest = { email, password };

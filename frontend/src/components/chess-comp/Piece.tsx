@@ -8,7 +8,7 @@ const PieceComp: FC<PieceProps> = ({ piece, className }) => {
   const imageSrc = `/slike-figura/chess.com/${pieceAlliance}${pieceName}.png`;
 
   const handleDragStart = (e: DragEvent<HTMLDivElement>) => {
-    e.dataTransfer.setDragImage(new Image(), 0, 0); // Transparent image
+    e.dataTransfer.setDragImage(new Image(), 0, 0);
     e.dataTransfer.setData("fromIndex", piece.getPiecePosition().toString());
   };
 

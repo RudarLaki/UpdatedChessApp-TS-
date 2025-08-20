@@ -14,7 +14,6 @@ type MoveHistoryProps = {
 const MoveHistory: FC<MoveHistoryProps> = ({ moveHistory }) => {
   if (!moveHistory || moveHistory.length === 0) return <div>No moves yet</div>;
 
-  // Group moves into pairs
   const rows: { white: string; black?: string }[] = [];
   for (let i = 0; i < moveHistory.length; i += 2) {
     rows.push({

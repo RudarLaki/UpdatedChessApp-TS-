@@ -5,7 +5,7 @@ type UciOpts = {
   enginePath: string;
   threads?: number;
   hash?: number;
-  skillLevel?: number; // 0..20
+  skillLevel?: number;
 };
 
 export class StockfishProcess extends EventEmitter {
@@ -63,10 +63,8 @@ export class StockfishProcess extends EventEmitter {
   async setPosition(params: { fen?: string; moves?: string[] }) {
     await this.ensureReady();
 
-    // start new game
     this.send("ucinewgame");
 
-    // tell engine to use new position
     if (params.fen) this.send(`position fen ${params.fen}`);
     else
       this.send(
@@ -75,14 +73,13 @@ export class StockfishProcess extends EventEmitter {
         }`
       );
 
-    // make sure engine is ready for calculation
     await new Promise<void>((res) => {
       const onReady = () => {
         this.off("ready", onReady);
         res();
       };
       this.on("ready", onReady);
-      this.send("isready"); // this triggers readyok
+      this.send("isready");
     });
   }
 

@@ -122,7 +122,6 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
 
       if (!socketService.socket) return;
 
-      // subscribe
       socketService.getMove((getMoveRequest: GetMoveRequest) => {
         applyMove(getMoveRequest.moveData);
       });
@@ -186,7 +185,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
       setSelectedTile(null);
       setHighlightedMoves([]);
 
-      applyMove({ from: selectedTile, to: tileIndex }); // Immediately apply your own move
+      applyMove({ from: selectedTile, to: tileIndex });
     }
   };
 
@@ -200,7 +199,6 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
     if (move && transition.getMoveStatus() === MoveStatus.DONE) {
       let newBoard;
       setMoveHistory((prev) => {
-        // Else start a new move with whiteMove
         return [
           ...(prev ?? []),
           { from: from, to: to, notation: move.toString() },
@@ -232,7 +230,6 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
       setGameBoard(newBoard);
       updateBoardFromGame(newBoard);
       const onMove = newBoard.getCurrentPlayer().getAlliance().toString();
-      // Add 5 seconds to the player who just moved
       setOnMove(onMove);
       if (onMove == playerColor) setBotMove("");
       if (botOrPlayer == "bot" && playerColor !== onMove)
@@ -322,18 +319,18 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   };
 
   const handleDrop = (moveData: { from: number; to: number }) => {
-    applyMove(moveData); // Your chess logic here
+    applyMove(moveData);
   };
 
   const indexToSquare = (index: number): string => {
-    const file = index % 8; // 0-7
-    const rank = 8 - Math.floor(index / 8); // 0-7
+    const file = index % 8;
+    const rank = 8 - Math.floor(index / 8);
     const files = "abcdefgh";
     return files[file] + rank;
   };
   function uciToIndex(move: string): { from: number; to: number } {
     const fileToCol = (file: string) => file.charCodeAt(0) - "a".charCodeAt(0);
-    const rankToRow = (rank: string) => 8 - parseInt(rank); // ranks 1..8 → rows 7..0
+    const rankToRow = (rank: string) => 8 - parseInt(rank);
 
     const fromCol = fileToCol(move[0]);
     const fromRow = rankToRow(move[1]);

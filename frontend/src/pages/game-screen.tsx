@@ -13,7 +13,6 @@ import Piece from "../../../sharedGameLogic/pieceLogic/Piece";
 import { socketService } from "../services/socket-service";
 import { gameService } from "../services/game-service";
 import type Board from "../../../sharedGameLogic/boardLogic/Board";
-// import { gameService } from "../services/game-service";
 import { aiBotService } from "../services/ai-bot-service";
 
 const myMap = new Map<string, number>();
@@ -65,10 +64,8 @@ const GameScreen = () => {
     if (storedRoomId) {
       console.log("Reconnecting to room:", storedRoomId);
 
-      // Step 1: rejoin socket room
       socketService.reconnect(storedRoomId, userInfo.id);
 
-      // Step 2: request game state from backend
       (async () => {
         const res = await gameService.requestGameState(storedRoomId);
         if (res) {
@@ -112,7 +109,7 @@ const GameScreen = () => {
           );
           setRoomId(data.roomId);
 
-          localStorage.setItem("roomId", data.roomId); // simpler: just store string
+          localStorage.setItem("roomId", data.roomId);
           navigate(`/game/${data.roomId}`, {
             replace: true,
             state: {
@@ -134,7 +131,7 @@ const GameScreen = () => {
     if (botOrPlayer !== "bot" || roomId) return;
 
     const startBotGame = async () => {
-      const level = typeof opponent === "number" ? opponent : 10; // default level
+      const level = typeof opponent === "number" ? opponent : 10;
       try {
         const res = await aiBotService.startGame(userInfo.id, level);
         setRoomId(res.roomId);

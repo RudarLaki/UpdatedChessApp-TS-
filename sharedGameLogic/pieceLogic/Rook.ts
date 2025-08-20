@@ -3,7 +3,7 @@ import { MajorMove, AttackMove, Move } from "../boardLogic/moveLogic/Move";
 import { type AllianceType } from "../boardLogic/Alliance";
 import type Board from "../boardLogic/Board";
 
-const CANDIDATE_DIRECTIONS = [-8, -1, 1, 8]; // All directions
+const CANDIDATE_DIRECTIONS = [-8, -1, 1, 8];
 
 export default class Rook extends Piece {
   firstMove: boolean;
@@ -35,7 +35,7 @@ export default class Rook extends Piece {
           if (piece.pieceAlliance !== this.pieceAlliance) {
             legalMoves.push(new AttackMove(board, this, current, piece));
           }
-          break; // Blocked after capture or same-side piece
+          break;
         }
       }
     }

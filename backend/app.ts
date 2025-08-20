@@ -7,29 +7,22 @@ import usersRoutes from "./routes/usersRoutes";
 import gameRoutes from "./routes/gameRoutes";
 import aiBotRoutes from "./routes/aiBotRoutes";
 
-// create the Express app
 const app = express();
-// setup morgan which gives us http request logging
-//app.use(morgan("dev"));
 
 app.use(
   cors({
-    //origin: "http://rudechess.xyz", // Your frontend
     origin: ["http://rudechess.xyz", "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DESTROY"],
   })
 );
 
-// set up Express to work with JSON
 app.use(express.json());
 
-// setup a friendly greeting for the root route
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 app.use("/game", gameRoutes);
 app.use("/ai-game", aiBotRoutes);
 
-// send 404 if no other route matched
 app.use((req, res) => {
   res.status(404).json({
     message: "Route Not Found",

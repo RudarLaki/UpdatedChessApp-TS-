@@ -1,4 +1,3 @@
-// middleware/auth.ts
 import { Request, Response, NextFunction } from "express";
 
 export const verifyToken = (
@@ -11,8 +10,7 @@ export const verifyToken = (
   if (!token) return res.status(401).json({ message: "Unauthorized" });
 
   try {
-    // For example, decode JWT
-    const decoded = JSON.parse(atob(token)); // In real app, use jwt.verify
+    const decoded = JSON.parse(atob(token));
     req.user = decoded;
     next();
   } catch (err) {

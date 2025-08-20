@@ -5,11 +5,11 @@ export const UserSchema = z.object({
   email: z.email(),
 
   userName: z.string().min(3),
-  password: z.string().min(60), // bcrypt hashes are 60 chars
+  password: z.string().min(60),
   sentAt: z.coerce.date(),
   lastActiveAt: z.date().optional(),
 
-  elo: z.number().default(1200), // Starting ELO
+  elo: z.number().default(1200),
   gamesPlayed: z.number().default(0),
   gamesWon: z.number().default(0),
   gamesLost: z.number().default(0),

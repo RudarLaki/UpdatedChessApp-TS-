@@ -1,4 +1,3 @@
-// pages/Register.tsx
 import { useState } from "react";
 import "../styles/Auth.css";
 import { authService } from "../services/auth-service";
@@ -6,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import type { RegisterRequest } from "../../../sharedGameLogic/types/auth";
 
 const Register = () => {
-  //const [userName, setUserName] = useState("");
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

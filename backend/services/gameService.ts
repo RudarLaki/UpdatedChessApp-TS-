@@ -73,9 +73,8 @@ class GameService {
       finishedAt: "",
       winner: null,
       chatId: null,
-      // moves: [], // e.g., ["e4", "e5", "Nf3", ...] in PGN or SAN notation
       status: "active",
-      turn: "White", // who should play next
+      turn: "White",
       timeControl,
     };
     await ddb.send(
@@ -90,10 +89,10 @@ class GameService {
     const exist = await ddb.send(
       new QueryCommand({
         TableName: "Game",
-        IndexName: "roomId-index", // must match the GSI name
+        IndexName: "roomId-index",
         KeyConditionExpression: "roomId = :roomId",
         ExpressionAttributeValues: {
-          ":roomId": roomId, // the roomId you want
+          ":roomId": roomId,
         },
       })
     );
@@ -111,7 +110,6 @@ class GameService {
       let newBoard: Board;
       if (move instanceof PawnPromotionMove) {
         newBoard = transition.getBoard();
-        //newBoard = handlePromotion(move, transition);
       } else {
         newBoard = transition.getBoard();
       }
@@ -124,42 +122,31 @@ class GameService {
         },
       ];
 
-      // const onMove = newBoard.getCurrentPlayer().getAlliance().toString();
-      // // Add 5 seconds to the player who just moved
-
-      // if (newBoard.getCurrentPlayer().isCheckMate()) {
-      //   //
-      // }
       const newBoardState = this.getBoardForDB(newBoard);
       await ddb.send(
         new UpdateCommand({
           TableName: "Game",
-          Key: { gameId: gameId }, // primary key of the item
+          Key: { gameId: gameId },
           UpdateExpression:
             "SET #boardState = :boardState, #moveHistory = :moveHistory",
           ExpressionAttributeNames: {
-            "#boardState": "boardState", // the attribute name
+            "#boardState": "boardState",
             "#moveHistory": "moveHistory",
           },
           ExpressionAttributeValues: {
-            ":boardState": newBoardState, // new value
-            ":moveHistory": updatedMoveHistory, // new value
+            ":boardState": newBoardState,
+            ":moveHistory": updatedMoveHistory,
           },
         })
       );
     }
   };
 
-  // validMove = async (
-  //   roomId: string,
-  //   moveCordinations: { from: number; to: number }
-  // ) => {};
-
   getBoardForDB = (boardState: Board): GameState => {
     const blackPiecesPosition = boardState
       .getBlackPieces()
       .map((piece: Piece) => ({
-        piece: piece.toString(), // "Pawn", "King", etc.
+        piece: piece.toString(),
         piecePosition: piece.getPiecePosition(),
         pieceAlliance: piece.getPieceAlliance().toString(),
       }));
@@ -233,14 +220,12 @@ class GameService {
   createBoardFromDB = (gameState: GameState): Board => {
     const builder = new Board.Builder();
 
-    // Place all pieces
     gameState.pieces.forEach((p: SerializedPiece) => {
       builder.setPiece(
         this.pieceFactory(p.piece, p.piecePosition, p.pieceAlliance)
       );
     });
 
-    // Set turn
     builder.setNextMoveMaker(
       gameState.turn === "White" ? Alliance.WHITE : Alliance.BLACK
     );

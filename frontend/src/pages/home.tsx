@@ -4,7 +4,6 @@ import StartGameDialog from "../components/app-comp/StartGameDialog";
 import "../styles/Home.css";
 
 export const Home = () => {
-  //const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
   const [isOpen, setIsOpen] = useState(false);
   const [botOrPlayer, setBotOrPlayer] = useState<"bot" | "player">("player");
 

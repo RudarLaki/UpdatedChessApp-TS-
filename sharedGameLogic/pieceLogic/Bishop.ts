@@ -3,7 +3,7 @@ import { MajorMove, AttackMove, Move } from "../boardLogic/moveLogic/Move";
 import type Board from "../boardLogic/Board";
 import type { AllianceType } from "../boardLogic/Alliance";
 
-const CANDIDATE_DIRECTIONS = [-9, -7, 7, 9]; // Diagonals
+const CANDIDATE_DIRECTIONS = [-9, -7, 7, 9];
 
 export default class Bishop extends Piece {
   constructor(piecePosition: number, pieceAlliance: AllianceType) {
@@ -29,7 +29,7 @@ export default class Bishop extends Piece {
           if (piece.pieceAlliance !== this.pieceAlliance) {
             legalMoves.push(new AttackMove(board, this, current, piece));
           }
-          break; // Blocked by any piece
+          break;
         }
       }
     }
@@ -41,7 +41,6 @@ export default class Bishop extends Piece {
     const dest = current + direction;
     if (dest < 0 || dest >= 64) return false;
 
-    // Prevent wraparound across rows (columns 0 <-> 7)
     const sameRowWrap =
       (current % 8 === 0 && dest % 8 === 7) ||
       (current % 8 === 7 && dest % 8 === 0);
