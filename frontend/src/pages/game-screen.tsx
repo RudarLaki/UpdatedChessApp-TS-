@@ -14,6 +14,7 @@ import { socketService } from "../services/socket-service";
 import { gameService } from "../services/game-service";
 import type Board from "../../../sharedGameLogic/boardLogic/Board";
 // import { gameService } from "../services/game-service";
+import { aiBotService } from "../services/ai-bot-service";
 
 const myMap = new Map<string, number>();
 myMap.set("P", 1);
@@ -23,14 +24,18 @@ myMap.set("R", 5);
 myMap.set("Q", 9);
 
 type GameNavState = {
-  time: number;
+  matchTime: number;
   addition: number;
+  botOrPlayer: "player" | "bot";
+  opponent: string | number;
 };
 
 const GameScreen = () => {
   const { state } = useLocation() as { state: GameNavState | null };
   const addition = state?.addition ?? 0;
-  const matchTime = (state?.time ?? 6) * 60;
+  const matchTime = (state?.matchTime ?? 6) * 60;
+  const botOrPlayer = state?.botOrPlayer ?? "player";
+  const opponent = state?.opponent ?? "random";
 
   const navigate = useNavigate();
   const [whiteEatenPieces, setWhiteEatenPieces] = useState<Piece[]>([]);
@@ -53,6 +58,7 @@ const GameScreen = () => {
   const [boardState, setBoardState] = useState<null | Board>(null);
 
   useEffect(() => {
+    if (botOrPlayer !== "player") return;
     socketService.connect("http://localhost:3000");
 
     const storedRoomId = localStorage.getItem("roomId");
@@ -68,24 +74,27 @@ const GameScreen = () => {
         if (res) {
           const board: Board = gameService.createBoardFromDB(res.boardState);
           setBoardState(board);
-
           setMoveHistory(res.moveHistory);
           setOnMove(res.moveHistory?.length % 2 == 0 ? "White" : "Black");
           setStatus(`Rejoined game in room ${storedRoomId}`);
-          console.log(res.whitePlayerId, userInfo.id);
           setPlayerColor(res.whitePlayerId == userInfo.id ? "White" : "Black");
           setRoomId(storedRoomId);
+
           navigate(`/game/${storedRoomId}`, {
             replace: true,
-            state: { time: state?.time ?? 6, addition: state?.addition ?? 0 },
+            state: {
+              matchTime: state?.matchTime ?? 6,
+              addition: state?.addition ?? 0,
+            },
           });
           console.log(status);
         }
       })();
-    }
-    // Only joinRoom if this is a *new* game
-    else {
-      socketService.joinRoom(userInfo.id, { matchTime, addition });
+    } else {
+      socketService.joinRoom(userInfo.id, {
+        initial: matchTime,
+        increment: addition,
+      });
 
       socketService.onGameStart(
         (data: {
@@ -106,7 +115,10 @@ const GameScreen = () => {
           localStorage.setItem("roomId", data.roomId); // simpler: just store string
           navigate(`/game/${data.roomId}`, {
             replace: true,
-            state: { time: state?.time ?? 6, addition: state?.addition ?? 0 },
+            state: {
+              matchTime: state?.matchTime ?? 6,
+              addition: state?.addition ?? 0,
+            },
           });
         }
       );
@@ -115,6 +127,28 @@ const GameScreen = () => {
     return () => {
       socketService.disconnect();
     };
+  }, []);
+
+  useEffect(() => {
+    if (botOrPlayer !== "bot" || roomId) return;
+
+    const startBotGame = async () => {
+      const level = typeof opponent === "number" ? opponent : 10; // default level
+      try {
+        const res = await aiBotService.startGame(userInfo.id, level);
+        setRoomId(res.roomId);
+
+        setPlayerColor("White");
+        navigate(`/game/bot`, {
+          replace: true,
+          state: { matchTime, addition, opponent, botOrPlayer },
+        });
+      } catch (err) {
+        console.error("Failed to start bot game:", err);
+      }
+    };
+
+    startBotGame();
   }, []);
 
   return (
@@ -172,6 +206,7 @@ const GameScreen = () => {
           playerColor={playerColor}
           roomId={roomId}
           startBoardState={boardState}
+          botOrPlayer={botOrPlayer}
         />
         <div className="info-bar">
           <div className="user-info">

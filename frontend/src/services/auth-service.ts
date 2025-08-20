@@ -1,4 +1,8 @@
 const API_URL = "http://localhost:3000/auth";
+import {
+  type LoginRequest,
+  type RegisterRequest,
+} from "../../../sharedGameLogic/types/auth";
 
 interface AuthResponse {
   email: string;
@@ -7,14 +11,12 @@ interface AuthResponse {
 }
 class AuthService {
   register = async (
-    userName: string,
-    email: string,
-    password: string
+    registerRequest: RegisterRequest
   ): Promise<AuthResponse> => {
     const res = await fetch(API_URL + `/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userName, email, password }),
+      body: JSON.stringify(registerRequest),
     });
 
     if (!res.ok) {
@@ -25,11 +27,11 @@ class AuthService {
     return res.json();
   };
 
-  login = async (email: string, password: string): Promise<AuthResponse> => {
+  login = async (loginRequest: LoginRequest): Promise<AuthResponse> => {
     const res = await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify(loginRequest),
     });
 
     if (!res.ok) {

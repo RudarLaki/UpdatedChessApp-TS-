@@ -3,6 +3,7 @@ import { useState } from "react";
 import "../styles/Auth.css";
 import { authService } from "../services/auth-service";
 import { useNavigate } from "react-router-dom";
+import type { RegisterRequest } from "../../../sharedGameLogic/types/auth";
 
 const Register = () => {
   //const [userName, setUserName] = useState("");
@@ -13,7 +14,8 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await authService.register(userName, email, password);
+    const registerRequest: RegisterRequest = { userName, email, password };
+    await authService.register(registerRequest);
     navigate("/");
   };
 

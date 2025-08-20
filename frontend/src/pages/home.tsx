@@ -6,6 +6,7 @@ import "../styles/Home.css";
 export const Home = () => {
   //const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
   const [isOpen, setIsOpen] = useState(false);
+  const [botOrPlayer, setBotOrPlayer] = useState<"bot" | "player">("player");
 
   return (
     <div className="page-container">
@@ -26,14 +27,32 @@ export const Home = () => {
       <div className="base-container">
         <section className="game-section">
           <div className="chessboard-placeholder"></div>
-          <StartGameDialog isOpen={isOpen} setIsOpen={setIsOpen} />
-          {/* Start Game and Play Against Bot Buttons */}
+          <StartGameDialog
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            botOrPlayer={botOrPlayer}
+          />
+
           <div className="game-buttons">
-            <button className="play-button" onClick={() => setIsOpen(true)}>
+            <button
+              className="play-button"
+              onClick={() => {
+                setIsOpen(true);
+                setBotOrPlayer("player");
+              }}
+            >
               Play Now
             </button>
 
-            <button className="play-button">Play Bot</button>
+            <button
+              className="play-button"
+              onClick={() => {
+                setIsOpen(true);
+                setBotOrPlayer("bot");
+              }}
+            >
+              Play Bot
+            </button>
           </div>
 
           {/* Show History Button */}

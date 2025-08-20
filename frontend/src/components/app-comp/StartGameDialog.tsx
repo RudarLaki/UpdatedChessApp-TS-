@@ -4,23 +4,50 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "../../styles/StartGameDialog.css";
 
+type OpponentType = "player" | "bot";
+
 type StartGameDialogProps = {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  botOrPlayer: OpponentType;
 };
 
-const StartGameDialog: FC<StartGameDialogProps> = ({ isOpen, setIsOpen }) => {
+const StartGameDialog: FC<StartGameDialogProps> = ({
+  isOpen,
+  setIsOpen,
+  botOrPlayer,
+}) => {
   const [time, setTime] = useState(600);
   const [addition, setAddition] = useState(0);
 
-  const [opponentType, setOpponentType] = useState("");
+  const [opponent, setOpponent] = useState("");
   const navigate = useNavigate();
+  const botRatings = [
+    800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000,
+    2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000, 3100, 3200,
+    3300, 3400, 3500, 3600,
+  ];
+  const friendOptions = [
+    "Random Player",
+    "Alice",
+    "Bob",
+    "Charlie",
+    "Diana",
+    "Ethan",
+    "Fiona",
+    "George",
+    "Hannah",
+    "Ivan",
+    "Julia",
+  ];
+  const arrayToShow = botOrPlayer == "bot" ? botRatings : friendOptions;
 
+  if (isOpen == false) return;
   return (
     <Dialog open={isOpen} onClose={close} as="div" className="dialog-overlay">
       <DialogPanel className="dialog-panel">
@@ -33,11 +60,17 @@ const StartGameDialog: FC<StartGameDialogProps> = ({ isOpen, setIsOpen }) => {
           Opponent:
           <select
             className="dialog-select"
-            value={opponentType}
-            onChange={(e) => setOpponentType(e.target.value)}
+            value={opponent}
+            onChange={(e) => setOpponent(e.target.value)}
           >
-            <option value="random">Random Opponent</option>
-            <option value="friend">Friend</option>
+            {arrayToShow.map((select, index) => (
+              <option
+                key={index}
+                value={select === "Random Player" ? "random" : select}
+              >
+                {select}
+              </option>
+            ))}
           </select>
         </label>
 
@@ -68,7 +101,9 @@ const StartGameDialog: FC<StartGameDialogProps> = ({ isOpen, setIsOpen }) => {
           <button
             className="dialog-start"
             onClick={() => {
-              navigate("/game", { state: { time, addition } });
+              navigate("/game", {
+                state: { matchTime: time, addition, opponent, botOrPlayer },
+              });
             }}
           >
             Start Game

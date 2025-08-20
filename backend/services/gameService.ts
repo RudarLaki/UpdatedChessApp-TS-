@@ -22,6 +22,10 @@ import Bishop from "../../sharedGameLogic/pieceLogic/Bishop";
 import Queen from "../../sharedGameLogic/pieceLogic/Queen";
 import King from "../../sharedGameLogic/pieceLogic/King";
 import { number, string } from "zod";
+import {
+  SendMoveRequest,
+  StartGameRequest,
+} from "../../sharedGameLogic/types/game";
 const GAME_TABLE = "Game";
 
 interface SerializedPiece {
@@ -43,12 +47,9 @@ interface GameState {
 }
 
 class GameService {
-  startGame = async (
-    whitePlayerId: string,
-    blackPlayerId: string,
-    roomId: string,
-    timeControl: { initial: number; increment: number }
-  ) => {
+  startGame = async (startGameRequest: StartGameRequest) => {
+    const { whitePlayerId, blackPlayerId, roomId, timeControl } =
+      startGameRequest;
     const whitePlayer = await userService.getUserById(whitePlayerId);
     const blackPlayer = await userService.getUserById(blackPlayerId);
 
@@ -84,10 +85,8 @@ class GameService {
       })
     );
   };
-  makeMove = async (
-    roomId: string,
-    moveCordinations: { from: number; to: number }
-  ) => {
+  makeMove = async (sendMoveRequest: SendMoveRequest) => {
+    const { roomId, moveData } = sendMoveRequest;
     const exist = await ddb.send(
       new QueryCommand({
         TableName: "Game",
@@ -105,11 +104,7 @@ class GameService {
     const moveHistory = exist.Items[0].moveHistory;
 
     const gameBoard = this.createBoardFromDB(boardState);
-    const move = MoveFactory.createMove(
-      gameBoard,
-      moveCordinations.from,
-      moveCordinations.to
-    );
+    const move = MoveFactory.createMove(gameBoard, moveData.from, moveData.to);
     const transition = gameBoard.getCurrentPlayer().makeMove(move);
 
     if (move && transition.getMoveStatus() === MoveStatus.DONE) {
@@ -123,8 +118,8 @@ class GameService {
       const updatedMoveHistory = [
         ...moveHistory,
         {
-          from: moveCordinations.from,
-          to: moveCordinations.to,
+          from: moveData.from,
+          to: moveData.to,
           notation: move.toString(),
         },
       ];

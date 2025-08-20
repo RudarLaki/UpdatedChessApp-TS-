@@ -1,4 +1,8 @@
 import { io, Socket } from "socket.io-client";
+import type {
+  GetMoveRequest,
+  SendMoveRequest,
+} from "../../../sharedGameLogic/types/game";
 
 class SocketService {
   socket: Socket | null = null;
@@ -9,7 +13,7 @@ class SocketService {
 
   joinRoom(
     userId: string,
-    timeControl: { matchTime: number; addition: number }
+    timeControl: { initial: number; increment: number }
   ) {
     this.socket?.emit("joinRoom", userId, timeControl);
   }
@@ -23,15 +27,12 @@ class SocketService {
     this.socket?.on("gameStart", callback);
   }
 
-  getMove(callback: (moveCordinations: { from: number; to: number }) => void) {
-    this.socket?.on("getMove", (coords) => {
-      console.log("Client got move", coords);
-      callback(coords);
-    });
+  getMove(callback: (getMoveRequest: GetMoveRequest) => void) {
+    this.socket?.on("getMove", callback);
   }
 
-  sendMove(roomId: string, move: { from: number; to: number }) {
-    this.socket?.emit("makeMove", roomId, move);
+  sendMove(sendMoveRequest: SendMoveRequest) {
+    this.socket?.emit("makeMove", sendMoveRequest);
   }
   off() {
     this.socket?.off("getMove");

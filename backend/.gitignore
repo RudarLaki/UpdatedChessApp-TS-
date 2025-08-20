@@ -1,6 +1,7 @@
 # dependencies
 /node_modules
 
+
 # production build
 /build
 /dist
@@ -28,3 +29,6 @@ Thumbs.db
 
 # misc
 *.tgz
+
+#stockfish binary file
+stockfish.exe

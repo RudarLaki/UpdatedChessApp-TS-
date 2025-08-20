@@ -1,0 +1,92 @@
+import crypto from "crypto";
+import Board from "../../sharedGameLogic/boardLogic/Board";
+import { GameState } from "../../sharedGameLogic/types/game";
+import { ChessGame } from "../models/ChessGame";
+import { gameService } from "./gameService";
+import { userService } from "./userService";
+import { ddb } from "./awsService";
+import { PutCommand } from "@aws-sdk/lib-dynamodb";
+import { StockfishProcess } from "../chess-engines/StockfishProcess";
+import path from "path";
+
+const GAME_TABLE = "Game";
+
+class AiBotService {
+  private engines = new Map<string, StockfishProcess>();
+
+  startGame = async (userId: string, level: number) => {
+    const whitePlayer = await userService.getUserById(userId);
+
+    const roomId = "bot-" + crypto.randomBytes(4).toString("base64url");
+
+    const initialBoard = Board.createStandardBoard();
+    const boardObject: GameState = gameService.getBoardForDB(initialBoard);
+
+    const enginePath = path.join(
+      process.cwd(),
+      "chess-engines",
+      "stockfish.exe"
+    );
+
+    const engine = new StockfishProcess({
+      enginePath: enginePath, // make sure path is correct
+      threads: 2,
+      hash: 256,
+      skillLevel: Math.max(0, Math.min(20, level)),
+    });
+    await engine.ensureReady();
+
+    this.engines.set(roomId, engine); // keep it alive for this game
+
+    const object: ChessGame = {
+      gameId: crypto.randomUUID(),
+      whitePlayerId: userId,
+      blackPlayerId: "bot",
+      whitePlayerUsername: whitePlayer?.userName,
+      blackPlayerUsername: "bot",
+      whitePlayerRating: whitePlayer?.elo,
+      blackPlayerRating: level,
+      boardState: boardObject,
+      moveHistory: [],
+      resultReason: null,
+      roomId,
+      sentAt: new Date().toISOString(),
+      finishedAt: "",
+      winner: null,
+      chatId: null,
+      status: "active",
+      turn: "White", // who should play next
+      timeControl: { initial: 0, increment: 0 },
+    };
+    await ddb.send(
+      new PutCommand({
+        TableName: GAME_TABLE,
+        Item: object,
+      })
+    );
+    return roomId;
+  };
+  makeMove = async (roomId: string, moves: string[]) => {
+    const engine = this.engines.get(roomId);
+    if (!engine) throw new Error("Engine not running for this game");
+
+    // Set current position from move history
+    await engine.setPosition({ moves });
+
+    // Ask for AI move (movetime = 1s)
+    const bestMove = await engine.go({ movetime: 1000 });
+    return bestMove; // UCI format, e.g., "e7e5" or "e7e8q" for promotion
+  };
+
+  close = (roomId: string) => {
+    const engine = this.engines.get(roomId);
+    if (engine) {
+      engine.quit();
+      this.engines.delete(roomId);
+    }
+  };
+
+  reconnect = () => {};
+}
+
+export const aiBotService = new AiBotService();

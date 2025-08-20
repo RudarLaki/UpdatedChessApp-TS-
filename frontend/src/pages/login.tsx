@@ -2,6 +2,7 @@ import { useState } from "react";
 import "../styles/Auth.css";
 import { authService } from "../services/auth-service";
 import { useNavigate } from "react-router-dom";
+import type { LoginRequest } from "../../../sharedGameLogic/types/auth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,10 +17,8 @@ const Login = () => {
     //setError(null);
 
     try {
-      // Call the auth service
-      const response = await authService.login(email, password);
-      // Check for successful response
-      // Redirect on success
+      const loginRequest: LoginRequest = { email, password };
+      const response = await authService.login(loginRequest);
       localStorage.setItem("loginInfo", JSON.stringify(response));
       navigate("/home"); // or '/dashboard' depending on your flow
     } catch (err) {

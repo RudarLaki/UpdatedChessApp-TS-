@@ -1,5 +1,6 @@
 import React, {
   useEffect,
+  useRef,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -31,6 +32,11 @@ import Knight from "../../../../sharedGameLogic/pieceLogic/Knight";
 import PromotionPanel from "./PromotionPanel";
 import Tile from "./Tile";
 import { socketService } from "../../services/socket-service";
+import type {
+  GetMoveRequest,
+  SendMoveRequest,
+} from "../../../../sharedGameLogic/types/game";
+import { aiBotService } from "../../services/ai-bot-service";
 
 type ChessBoardProps = {
   setOnMove: Dispatch<SetStateAction<"White" | "Black" | null>>;
@@ -50,6 +56,7 @@ type ChessBoardProps = {
   playerColor: "Black" | "White" | null;
   roomId: string;
   startBoardState: Board | null;
+  botOrPlayer: "bot" | "player";
 };
 
 const ChessBoard: React.FC<ChessBoardProps> = ({
@@ -60,6 +67,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   playerColor,
   roomId,
   startBoardState,
+  botOrPlayer,
 }) => {
   const [selectedTile, setSelectedTile] = useState<number | null>(null);
   const [boardState, setBoardState] = useState(new Array(64).fill(null));
@@ -78,6 +86,10 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
     alliance: null,
   });
 
+  const [botMove, setBotMove] = useState("");
+
+  const movesForBotRef = useRef<string[]>([]);
+
   useEffect(() => {
     const initialBoard = startBoardState
       ? startBoardState
@@ -87,12 +99,20 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   }, [startBoardState]);
 
   useEffect(() => {
+    if (botOrPlayer !== "bot" || botMove == "") return;
+    applyMove(uciToIndex(botMove));
+  }, [botMove, botOrPlayer]);
+
+  useEffect(() => {
+    if (botOrPlayer == "bot") {
+      return;
+    }
     if (!socketService.socket) return;
 
-    socketService.getMove((moveCordinations: { from: number; to: number }) =>
-      applyMove(moveCordinations)
-    );
-
+    // subscribe
+    socketService.getMove((getMoveRequest: GetMoveRequest) => {
+      applyMove(getMoveRequest.moveData);
+    });
     return () => {
       socketService?.off();
     };
@@ -108,8 +128,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
     setBoardState(newBoard);
   };
 
-  const handleTileClick = (tileIndex: number) => {
-    console.log(playerColor);
+  const handleTileClick = async (tileIndex: number) => {
     if (
       !gameBoard ||
       playerColor !== gameBoard.getCurrentPlayer().getAlliance().toString()
@@ -141,17 +160,27 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
         setHighlightedMoves(moveDestinations);
       }
     } else {
-      const moveData = {
-        from: selectedTile,
-        to: tileIndex,
+      const sendMoveRequest: SendMoveRequest = {
+        roomId,
+        moveData: { from: selectedTile, to: tileIndex },
       };
-      console.log(roomId);
-      socketService.sendMove(roomId, moveData);
+      if (botOrPlayer == "bot") {
+        const moveUci = indexToSquare(selectedTile) + indexToSquare(tileIndex);
+        movesForBotRef.current.push(moveUci);
+        const bestMove = await aiBotService.makeMove(
+          roomId,
+          movesForBotRef.current
+        );
+        movesForBotRef.current.push(bestMove);
+        setBotMove(bestMove);
+      } else {
+        socketService.sendMove(sendMoveRequest);
+      }
 
       setSelectedTile(null);
       setHighlightedMoves([]);
 
-      applyMove(moveData); // Immediately apply your own move
+      applyMove({ from: selectedTile, to: tileIndex }); // Immediately apply your own move
     }
   };
 
@@ -164,7 +193,6 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
 
     if (move && transition.getMoveStatus() === MoveStatus.DONE) {
       let newBoard;
-
       setMoveHistory((prev) => {
         // Else start a new move with whiteMove
         return [
@@ -200,6 +228,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
       const onMove = newBoard.getCurrentPlayer().getAlliance().toString();
       // Add 5 seconds to the player who just moved
       setOnMove(onMove);
+      if (onMove == playerColor) setBotMove("");
 
       if (newBoard.getCurrentPlayer().isCheckMate()) {
         //
@@ -287,6 +316,26 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   const handleDrop = (moveData: { from: number; to: number }) => {
     applyMove(moveData); // Your chess logic here
   };
+
+  const indexToSquare = (index: number): string => {
+    const file = index % 8; // 0-7
+    const rank = 8 - Math.floor(index / 8); // 0-7
+    const files = "abcdefgh";
+    return files[file] + rank;
+  };
+  function uciToIndex(move: string): { from: number; to: number } {
+    const fileToCol = (file: string) => file.charCodeAt(0) - "a".charCodeAt(0);
+    const rankToRow = (rank: string) => 8 - parseInt(rank); // ranks 1..8 → rows 7..0
+
+    const fromCol = fileToCol(move[0]);
+    const fromRow = rankToRow(move[1]);
+    const toCol = fileToCol(move[2]);
+    const toRow = rankToRow(move[3]);
+
+    const from = fromRow * 8 + fromCol;
+    const to = toRow * 8 + toCol;
+    return { from, to };
+  }
 
   return (
     <div className="chess-board">

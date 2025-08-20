@@ -1,14 +1,14 @@
-import { GetCommand, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
-import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken";
-import { ddb } from "../services/awsService";
 import { Request, Response } from "express";
-import crypto from "crypto";
 import { userService } from "../services/userService";
+import {
+  LoginRequest,
+  RegisterRequest,
+} from "../../sharedGameLogic/types/auth";
 
 const USERS_TABLE = "Users";
 const register = async (req: Request, res: Response) => {
-  const { userName, email, password } = req.body;
+  const { userName, email, password } = req.body as RegisterRequest;
   try {
     const user = await userService.checkUserExists(email);
     if (user != null)
@@ -28,7 +28,7 @@ const register = async (req: Request, res: Response) => {
 };
 
 const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body as LoginRequest;
   try {
     const user = await userService.checkUserExists(email);
     if (!user) return res.status(401).json({ message: "user doesn't exist" });

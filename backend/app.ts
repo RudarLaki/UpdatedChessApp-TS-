@@ -5,6 +5,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import usersRoutes from "./routes/usersRoutes";
 import gameRoutes from "./routes/gameRoutes";
+import aiBotRoutes from "./routes/aiBotRoutes";
 
 // create the Express app
 const app = express();
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 app.use("/game", gameRoutes);
+app.use("/ai-game", aiBotRoutes);
 
 // send 404 if no other route matched
 app.use((req, res) => {
