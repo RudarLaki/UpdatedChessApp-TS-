@@ -1,4 +1,4 @@
-import type { AllianceType } from "../../logic/boardLogic/Alliance";
+import type { AllianceType } from "../../../../sharedGameLogic/boardLogic/Alliance";
 
 type PromotionPanelProps = {
   alliance: AllianceType;

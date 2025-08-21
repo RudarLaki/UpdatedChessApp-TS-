@@ -16,7 +16,7 @@ const Login = () => {
       const loginRequest: LoginRequest = { email, password };
       const response = await authService.login(loginRequest);
       localStorage.setItem("loginInfo", JSON.stringify(response));
-      navigate("/home"); // or '/dashboard' depending on your flow
+      navigate("/home");
     } catch (err) {
       // Type checking for error
       if (err instanceof Error) {

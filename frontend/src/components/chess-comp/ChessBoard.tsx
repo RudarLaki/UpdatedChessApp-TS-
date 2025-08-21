@@ -105,12 +105,13 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   }, [botMove, botOrPlayer]);
 
   useEffect(() => {
-    if (movesForBotRef.current.length == 0) return;
     const runBotMove = async () => {
       if (
         botOrPlayer === "bot" &&
         playerColor !== gameBoard?.getCurrentPlayer().getAlliance().toString()
       ) {
+        if (movesForBotRef.current.length == 0) return;
+
         const bestMove = await aiBotService.makeMove(
           roomId,
           movesForBotRef.current
@@ -119,7 +120,8 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
         setBotMove(bestMove);
         return;
       }
-
+    };
+    const runMove = () => {
       if (!socketService.socket) return;
 
       socketService.getMove((getMoveRequest: GetMoveRequest) => {
@@ -130,8 +132,8 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
         socketService?.off();
       };
     };
-
-    runBotMove();
+    if (botOrPlayer == "bot") runBotMove();
+    else runMove();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameBoard]);
 

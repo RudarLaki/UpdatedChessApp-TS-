@@ -6,6 +6,7 @@ type UciOpts = {
   threads?: number;
   hash?: number;
   skillLevel?: number;
+  elo?: number;
 };
 
 export class StockfishProcess extends EventEmitter {
@@ -38,7 +39,14 @@ export class StockfishProcess extends EventEmitter {
           this.send(`setoption name Threads value ${this.opts.threads}`);
         if (this.opts.hash)
           this.send(`setoption name Hash value ${this.opts.hash}`);
-        if (this.opts.skillLevel !== undefined)
+        if (this.opts.elo !== undefined && this.opts.elo !== null)
+          this.send(
+            `setoption name UCI_Elo value ${Math.max(
+              1320,
+              Math.min(3190, this.opts.elo)
+            )}`
+          );
+        else if (this.opts.skillLevel !== undefined)
           this.send(`setoption name Skill Level value ${this.opts.skillLevel}`);
         this.send("isready");
       } else if (line === "readyok") {

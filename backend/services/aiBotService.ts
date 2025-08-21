@@ -27,14 +27,31 @@ class AiBotService {
       "chess-engines",
       "stockfish.exe"
     );
+    let elo: number | undefined = undefined;
+
+    // Use Elo only if >= 1320
+    if (level >= 1320) {
+      elo = level;
+    } else {
+      // Map levels <1320 to Stockfish skill levels 0–4
+      if (level < 900) level = 0;
+      else if (level < 1000) level = 1;
+      else if (level < 1100) level = 2;
+      else if (level < 1200) level = 3;
+      else level = 4;
+    }
 
     const engine = new StockfishProcess({
       enginePath: enginePath,
       threads: 2,
       hash: 256,
-      skillLevel: Math.max(0, Math.min(20, level)),
+      skillLevel: elo ? undefined : level,
+      elo,
     });
+
     await engine.ensureReady();
+    console.log(engine);
+    console.log(roomId);
 
     this.engines.set(roomId, engine);
 

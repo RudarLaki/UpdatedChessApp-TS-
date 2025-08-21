@@ -1,6 +1,6 @@
 import "../styles/GameScreen.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import SideNav from "../components/app-comp/side-nav";
@@ -55,6 +55,8 @@ const GameScreen = () => {
   const [status, setStatus] = useState("Waiting for opponent...");
   const userInfo = JSON.parse(localStorage.getItem("loginInfo")!);
   const [boardState, setBoardState] = useState<null | Board>(null);
+
+  const startedRef = useRef(false);
 
   useEffect(() => {
     if (botOrPlayer !== "player") return;
@@ -128,7 +130,8 @@ const GameScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (botOrPlayer !== "bot" || roomId) return;
+    if (botOrPlayer !== "bot" || roomId || startedRef.current) return;
+    startedRef.current = true;
 
     const startBotGame = async () => {
       const level = typeof opponent === "number" ? opponent : 10;
