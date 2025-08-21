@@ -21,7 +21,7 @@ class AiBotService {
 
     const initialBoard = Board.createStandardBoard();
     const boardObject: GameState = gameService.getBoardForDB(initialBoard);
-
+    console.log(555);
     const enginePath = path.join(
       process.cwd(),
       "chess-engines",
