@@ -60,7 +60,7 @@ const GameScreen = () => {
 
   useEffect(() => {
     if (botOrPlayer !== "player") return;
-    socketService.connect("http://13.61.15.90:3000");
+    socketService.connect("http://51.20.64.148:3000");
 
     const storedRoomId = localStorage.getItem("roomId");
     if (storedRoomId) {

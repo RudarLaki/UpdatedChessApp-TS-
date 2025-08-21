@@ -8,6 +8,7 @@ import {
 } from "../../../sharedGameLogic/types/game";
 
 const API_URL = "http://51.20.64.148:3000/game/";
+// const API_URL = "http://localhost:3000/game/";
 
 class GameService {
   requestGameState = async (roomId: string) => {
