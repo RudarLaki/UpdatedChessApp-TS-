@@ -36,6 +36,7 @@ export const Home = () => {
             <button
               className="play-button"
               onClick={() => {
+                console.log("press play button");
                 setIsOpen(true);
                 setBotOrPlayer("player");
               }}
