@@ -86,6 +86,7 @@ class GameService {
   };
   makeMove = async (sendMoveRequest: SendMoveRequest) => {
     const { roomId, moveData } = sendMoveRequest;
+    console.log(sendMoveRequest);
     const exist = await ddb.send(
       new QueryCommand({
         TableName: "Game",

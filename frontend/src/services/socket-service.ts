@@ -32,6 +32,7 @@ class SocketService {
   }
 
   sendMove(sendMoveRequest: SendMoveRequest) {
+    console.log(sendMoveRequest);
     this.socket?.emit("makeMove", sendMoveRequest);
   }
   off() {

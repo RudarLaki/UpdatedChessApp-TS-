@@ -7,7 +7,7 @@ import {
   type SerializedPiece,
 } from "../../../sharedGameLogic/types/game";
 
-const API_URL = "http://localhost:3000/game/";
+const API_URL = "http://13.61.15.90:3000/game/";
 
 class GameService {
   requestGameState = async (roomId: string) => {

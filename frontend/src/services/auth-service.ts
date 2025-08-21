@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/auth";
+const API_URL = "http://13.61.15.90:3000/auth";
 import {
   type LoginRequest,
   type RegisterRequest,
