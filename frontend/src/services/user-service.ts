@@ -1,4 +1,4 @@
-const API_URL = "http://13.61.15.90:3000/user/";
+const API_URL = "http://51.20.64.148:3000/user/";
 
 class UserService {
   getProfile = async (id: number) => {
