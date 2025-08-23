@@ -14,6 +14,7 @@ import { socketService } from "../services/socket-service";
 import { gameService } from "../services/game-service";
 import type Board from "../../../sharedGameLogic/boardLogic/Board";
 import { aiBotService } from "../services/ai-bot-service";
+import Chat from "../components/app-comp/Chat";
 
 const myMap = new Map<string, number>();
 myMap.set("P", 1);
@@ -55,12 +56,14 @@ const GameScreen = () => {
   const [status, setStatus] = useState("Waiting for opponent...");
   const userInfo = JSON.parse(localStorage.getItem("loginInfo")!);
   const [boardState, setBoardState] = useState<null | Board>(null);
+  const [opponentId, setOpponentId] = useState("");
 
   const startedRef = useRef(false);
 
   useEffect(() => {
     if (botOrPlayer !== "player") return;
-    socketService.connect("http://51.20.64.148:3000");
+    // socketService.connect("http://51.20.64.148:3000");
+    socketService.connect("http://localhost:3000");
 
     const storedRoomId = localStorage.getItem("roomId");
     if (storedRoomId) {
@@ -77,6 +80,12 @@ const GameScreen = () => {
           setOnMove(res.moveHistory?.length % 2 == 0 ? "White" : "Black");
           setStatus(`Rejoined game in room ${storedRoomId}`);
           setPlayerColor(res.whitePlayerId == userInfo.id ? "White" : "Black");
+          setOpponentId(
+            res.whitePlayerId == userInfo.id
+              ? res.blackPlayerId
+              : res.whitePlayerId
+          );
+
           setRoomId(storedRoomId);
 
           navigate(`/game/${storedRoomId}`, {
@@ -104,6 +113,12 @@ const GameScreen = () => {
             data.players[0].userId == userInfo.id
               ? data.players[0]
               : data.players[1];
+
+          setOpponentId(
+            data.players[0].userId == userInfo.id
+              ? data.players[1].userId
+              : data.players[0].userId
+          );
 
           setPlayerColor(user.color);
           setStatus(
@@ -275,7 +290,6 @@ const GameScreen = () => {
 
           <i className="fa-solid fa-forward-fast left-side-icon"></i>
         </div>
-        <MoveHistory moveHistory={moveHistory} />
         <div style={{ display: "flex", justifyContent: "space-evenly" }}>
           <div className="options">
             <i className="fa-solid fa-flag left-side-icon"></i>
@@ -294,10 +308,15 @@ const GameScreen = () => {
             <span className="tooltip-text">Propose return of move</span>
           </div>
         </div>
-        {/* <div className="game-chat" style={{ alignContent: "center" }}>
-          <i className="fa-solid fa-comments left-side-icon"></i>
-          <span className="tooltip-text">Resign</span>
-        </div> */}
+        <MoveHistory moveHistory={moveHistory} />
+
+        <div
+          className="game-chat"
+          style={{ position: "fixed", bottom: "20px" }}
+        >
+          <Chat userId={userInfo.id} friendId={opponentId} roomId={roomId} />
+          <span className="tooltip-text">Chat</span>
+        </div>
       </div>
       {/* <div className="right-side">
         <div className="top-video"> video call</div>

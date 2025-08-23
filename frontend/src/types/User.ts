@@ -1,3 +1,5 @@
 export type User = {
-  user: User;
+  id: string;
+  userName: string;
+  elo: number;
 };

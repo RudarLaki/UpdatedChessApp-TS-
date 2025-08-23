@@ -7,8 +7,8 @@ import {
   type SerializedPiece,
 } from "../../../sharedGameLogic/types/game";
 
-const API_URL = "http://51.20.64.148:3000/game/";
-// const API_URL = "http://localhost:3000/game/";
+// const API_URL = "http://51.20.64.148:3000/game/";
+const API_URL = "http://localhost:3000/game/";
 
 class GameService {
   requestGameState = async (roomId: string) => {
@@ -28,8 +28,8 @@ class GameService {
         }
         throw new Error(errorMsg);
       }
-
       const data = await res.json();
+
       return data;
     } catch (err) {
       console.error("Error in requestGameState:", err);

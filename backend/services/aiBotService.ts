@@ -21,7 +21,6 @@ class AiBotService {
 
     const initialBoard = Board.createStandardBoard();
     const boardObject: GameState = gameService.getBoardForDB(initialBoard);
-    console.log(555);
     const enginePath = path.join(
       process.cwd(),
       "chess-engines",
@@ -29,11 +28,9 @@ class AiBotService {
     );
     let elo: number | undefined = undefined;
 
-    // Use Elo only if >= 1320
     if (level >= 1320) {
       elo = level;
     } else {
-      // Map levels <1320 to Stockfish skill levels 0–4
       if (level < 900) level = 0;
       else if (level < 1000) level = 1;
       else if (level < 1100) level = 2;
@@ -48,10 +45,7 @@ class AiBotService {
       skillLevel: elo ? undefined : level,
       elo,
     });
-
     await engine.ensureReady();
-    console.log(engine);
-    console.log(roomId);
 
     this.engines.set(roomId, engine);
 

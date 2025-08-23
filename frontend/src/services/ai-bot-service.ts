@@ -1,5 +1,5 @@
-const API_URL = "http://51.20.64.148:3000/ai-game/";
-// const API_URL = "http://localhost:3000/ai-game/";
+// const API_URL = "http://51.20.64.148:3000/ai-game/";
+const API_URL = "http://localhost:3000/ai-game/";
 
 class AiBotService {
   startGame = async (userId: number, level: number) => {

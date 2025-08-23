@@ -2,6 +2,8 @@ import { io, Socket } from "socket.io-client";
 import type {
   GetMoveRequest,
   SendMoveRequest,
+  GetMessageRequest,
+  SendMessageRequest,
 } from "../../../sharedGameLogic/types/game";
 
 class SocketService {
@@ -32,8 +34,19 @@ class SocketService {
   }
 
   sendMove(sendMoveRequest: SendMoveRequest) {
-    console.log(sendMoveRequest);
     this.socket?.emit("makeMove", sendMoveRequest);
+  }
+
+  getMessage(callback: (getMessageRequest: GetMessageRequest) => void) {
+    this.socket?.on("getMessage", callback);
+  }
+
+  sendMessage(sendMessageRequest: SendMessageRequest) {
+    this.socket?.emit("sendMessage", sendMessageRequest);
+  }
+
+  offChatMessage(callback: (getMessageRequest: GetMessageRequest) => void) {
+    this.socket?.off("receiveMessage", callback);
   }
   off() {
     this.socket?.off("getMove");

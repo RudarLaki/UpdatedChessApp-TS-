@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes";
 import usersRoutes from "./routes/usersRoutes";
 import gameRoutes from "./routes/gameRoutes";
 import aiBotRoutes from "./routes/aiBotRoutes";
+import chatRoutes from "./routes/chatRoutes";
 
 const app = express();
 
@@ -19,9 +20,10 @@ app.use(
 app.use(express.json());
 
 app.use("/auth", authRoutes);
-app.use("/users", usersRoutes);
+app.use("/user", usersRoutes);
 app.use("/game", gameRoutes);
 app.use("/ai-game", aiBotRoutes);
+app.use("/chat", chatRoutes);
 
 app.use((req, res) => {
   res.status(404).json({

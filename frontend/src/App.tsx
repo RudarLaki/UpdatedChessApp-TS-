@@ -4,6 +4,7 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import { Home } from "./pages/home";
 import GameScreen from "./pages/game-screen";
+import FriendsPage from "./pages/friends";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/game" element={<GameScreen />} />
         <Route path="/game/:roomId" element={<GameScreen />} />
+        <Route path="/friends" element={<FriendsPage />} />
       </Routes>
     </BrowserRouter>
   );

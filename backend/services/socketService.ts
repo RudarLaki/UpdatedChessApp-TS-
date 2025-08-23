@@ -5,7 +5,11 @@ import {
   SendMoveRequest,
   GetMoveRequest,
   StartGameRequest,
+  SendMessageRequest,
+  GetMessageRequest,
 } from "../../sharedGameLogic/types/game";
+import { chatService } from "./chatService";
+import { error } from "console";
 
 interface Room {
   id: string;
@@ -84,6 +88,13 @@ export function initSocket(io: Server) {
       const { roomId, moveData } = sendMoveRequest;
       await gameService.makeMove(sendMoveRequest);
       socket.to(roomId).emit("getMove", { moveData });
+    });
+
+    socket.on("sendMessage", async (sendMessageRequest: SendMessageRequest) => {
+      const res: GetMessageRequest = (await chatService.sendMessage(
+        sendMessageRequest
+      )) as GetMessageRequest;
+      socket.to(sendMessageRequest.roomId).emit("getMessage", res);
     });
 
     socket.on("disconnect", () => {

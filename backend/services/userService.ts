@@ -3,8 +3,10 @@ import { GetCommand, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 
 import bcrypt from "bcryptjs";
 import { User } from "../models/User";
+import { Friends } from "../models/Friends";
 
 const USERS_TABLE = "Users";
+const FRIENDS_TABLE = "Friends";
 
 class UserService {
   registerUser = async (email: string, userName: string, password: string) => {
@@ -57,6 +59,65 @@ class UserService {
       return null;
     const user = existing.Items[0] as User;
     return user;
+  };
+
+  addFriend = async (userId1: string, userId2: string) => {
+    //check if users even exist, and if they already friends?
+    // Add friendship both ways
+    const friendObject: Friends = {
+      id: [userId1, userId2].sort().join("#"),
+      userId1,
+      userId2,
+      status: "friends",
+      sentAt: new Date().toISOString(),
+    };
+    await ddb.send(
+      new PutCommand({
+        TableName: FRIENDS_TABLE,
+        Item: friendObject,
+      })
+    );
+  };
+
+  // Get all friends of a user
+  getFriends = async (userId: string) => {
+    const friends1Res = await ddb.send(
+      new QueryCommand({
+        TableName: FRIENDS_TABLE,
+        IndexName: "userId1-index",
+        KeyConditionExpression: "userId1 = :uid",
+        ExpressionAttributeValues: { ":uid": userId },
+      })
+    );
+    // Query friends where user is in userId2
+    const friends2Res = await ddb.send(
+      new QueryCommand({
+        TableName: FRIENDS_TABLE,
+        IndexName: "userId2-index",
+        KeyConditionExpression: "userId2 = :uid",
+        ExpressionAttributeValues: { ":uid": userId },
+      })
+    );
+
+    const friends1 = friends1Res.Items ?? [];
+    const friends2 = friends2Res.Items ?? [];
+
+    return [...friends1, ...friends2];
+  };
+
+  search = async (query: string) => {
+    // Option 1: if `userId` is a key or indexed (better performance)
+    const res = await ddb.send(
+      new QueryCommand({
+        TableName: USERS_TABLE,
+        KeyConditionExpression: "begins_with(id, :q)",
+        ExpressionAttributeValues: {
+          ":q": query,
+        },
+      })
+    );
+
+    return res.Items ?? [];
   };
 }
 

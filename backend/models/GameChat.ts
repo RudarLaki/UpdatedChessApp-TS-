@@ -1,9 +1,10 @@
 import z from "zod";
 
 export const GameChatSchema = z.object({
-  chatId: z.string(),
-  roomId: z.string(),
+  id: z.string(),
+  messageId: z.string(),
   senderId: z.string(),
+  receiverId: z.string(),
   message: z.string().min(1),
   sentAt: z.coerce.date(),
 });

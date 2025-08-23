@@ -31,3 +31,20 @@ export type SendMoveRequest = {
 export type GetMoveRequest = {
   moveData: { from: number; to: number };
 };
+
+export type SendMessageRequest = {
+  userId: string;
+  friendId: string;
+  roomId: string;
+  message: string;
+  sentAt: Date;
+};
+
+export type GetMessageRequest = {
+  message: string;
+  id: string;
+  messageId: string;
+  receiverId: string;
+  senderId: string;
+  sentAt: string;
+};
