@@ -5,6 +5,7 @@ import {
   type LoginRequest,
   type RegisterRequest,
 } from "../../../sharedGameLogic/types/auth";
+import axios from "axios";
 
 interface AuthResponse {
   email: string;
@@ -15,32 +16,23 @@ class AuthService {
   register = async (
     registerRequest: RegisterRequest
   ): Promise<AuthResponse> => {
-    const res = await fetch(API_URL + `/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(registerRequest),
-    });
-
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Registration failed");
+    try {
+      const res = await axios.post(API_URL + `/register`, registerRequest);
+      return res.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || "Failed starting game");
     }
-
-    return res.json();
   };
 
   login = async (loginRequest: LoginRequest): Promise<AuthResponse> => {
-    const res = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(loginRequest),
-    });
-
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Login failed");
+    try {
+      const res = await axios.post(`${API_URL}/login`, loginRequest);
+      return res.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || "Failed starting game");
     }
-    return res.json();
   };
 
   saveToken = (token: string) => {

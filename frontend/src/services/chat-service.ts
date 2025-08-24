@@ -1,4 +1,5 @@
 import { io, Socket } from "socket.io-client";
+import api from "../context/apiJWT";
 
 const API_URL = "http://localhost:3000/chat/";
 
@@ -10,19 +11,8 @@ class ChatService {
   }
   getChat = async (userId: string, friendId: string) => {
     try {
-      const res = await fetch(`${API_URL}messages/${userId}/${friendId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch chat");
-      }
-      const { messages } = await res.json();
-
-      return messages; // e.g., { messages: [...] }
+      const res = await api.get(`${API_URL}messages/${userId}/${friendId}`, {});
+      return res.data;
     } catch (err) {
       console.error("Error fetching chat:", err);
       return null;

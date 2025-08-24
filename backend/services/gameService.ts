@@ -56,13 +56,10 @@ class GameService {
     const initialBoard = Board.createStandardBoard();
     const boardObject: GameState = this.getBoardForDB(initialBoard);
 
-    const gameId = crypto.randomUUID();
     const object: ChessGame = {
       gameId: crypto.randomUUID(),
       whitePlayerId,
       blackPlayerId,
-      whitePlayerUsername: whitePlayer?.userName,
-      blackPlayerUsername: blackPlayer?.userName,
       whitePlayerRating: whitePlayer?.elo,
       blackPlayerRating: blackPlayer?.elo,
       boardState: boardObject,
@@ -86,7 +83,7 @@ class GameService {
   };
   makeMove = async (sendMoveRequest: SendMoveRequest) => {
     const { roomId, moveData } = sendMoveRequest;
-    console.log(sendMoveRequest);
+
     const exist = await ddb.send(
       new QueryCommand({
         TableName: "Game",

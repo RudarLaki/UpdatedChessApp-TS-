@@ -1,58 +1,46 @@
 // const API_URL = "http://51.20.64.148:3000/ai-game/";
 const API_URL = "http://localhost:3000/ai-game/";
+import api from "../context/apiJWT";
 
 class AiBotService {
   startGame = async (userId: number, level: number) => {
-    const res = await fetch(API_URL + "start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, level }),
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Failed starting game");
+    try {
+      const res = await api.post(`${API_URL}start`, { userId, level });
+      return res.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || "Failed starting game");
     }
-    const ret = await res.json();
-    return ret;
   };
 
   makeMove = async (roomId: string, moves: string[]) => {
-    const res = await fetch(API_URL + "move", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ roomId, moves }),
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Failed making move");
+    try {
+      const res = await api.post(API_URL + "move", { roomId, moves });
+      return res.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || "Failed starting game");
     }
-    return res.json();
   };
 
   close = async (userId: string) => {
-    const res = await fetch(API_URL + "close", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }),
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Failed closing game");
+    try {
+      const res = await api.post(API_URL + "close", { userId });
+      return res.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || "Failed starting game");
     }
-    return res.json();
   };
 
   reconnect = async (userId: string) => {
-    const res = await fetch(API_URL + "reconnect", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }),
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Failed reconnecting to game");
+    try {
+      const res = await api.post(API_URL + "reconnect", { userId });
+      return res.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || "Failed starting game");
     }
-    return res.json();
   };
 }
 

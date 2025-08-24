@@ -4,8 +4,6 @@ export const ChessGameSchema = z.object({
   gameId: z.string(),
   whitePlayerId: z.string(),
   blackPlayerId: z.string().min(3),
-  whitePlayerUsername: z.string(),
-  blackPlayerUsername: z.string(),
   whitePlayerRating: z.number().optional(),
   blackPlayerRating: z.number().optional(),
   boardState: z.object({

@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from "react";
+import { useEffect, useRef, useState, type FC } from "react";
 import "../../styles/Chat.css";
 
 type ChatType = { userId: string; friendId: string; roomId: string };
@@ -26,10 +26,14 @@ const Chat: FC<ChatType> = ({ userId, friendId, roomId }) => {
   const toggleTime = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   useEffect(() => {
     if (!friendId || !userId) return;
-
     const getMessages = async () => {
       try {
         const messages: GetMessageRequest[] | null = await chatService.getChat(
@@ -96,39 +100,44 @@ const Chat: FC<ChatType> = ({ userId, friendId, roomId }) => {
             onClick={() => setOpen(false)}
           ></i>
           <div className="chat-messages">
-            {messages.map((msg, idx) => {
-              const prevMsg = idx > 0 ? messages[idx - 1] : null;
-              const isNewGroup = !prevMsg || prevMsg.senderId !== msg.senderId;
-              const isUser = msg.senderId === userId;
-              const showTime = expandedId === msg.sentAt; // ← added
+            {messages.length != 0 &&
+              messages.map((msg, idx) => {
+                const prevMsg = idx > 0 ? messages[idx - 1] : null;
+                const isNewGroup =
+                  !prevMsg || prevMsg.senderId !== msg.senderId;
+                const isUser = msg.senderId === userId;
+                const showTime = expandedId === msg.sentAt; // ← added
 
-              return (
-                <div key={msg.sentAt} className="message-group">
-                  {/* Show sender label only for opponent */}
-                  {!isUser && isNewGroup && (
-                    <div className="sender-label">
-                      {msg.senderId.substring(0, 3)}
-                    </div>
-                  )}
-
-                  <div
-                    className={`message-bubble ${isUser ? "sent" : "received"}`}
-                    onClick={() => toggleTime(msg.sentAt)}
-                  >
-                    {msg.message}
-
-                    {showTime && (
-                      <div className="message-time">
-                        {new Date(msg.sentAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                return (
+                  <div key={msg.sentAt} className="message-group">
+                    {/* Show sender label only for opponent */}
+                    {!isUser && isNewGroup && (
+                      <div className="sender-label">
+                        {msg.senderId.substring(0, 3)}
                       </div>
                     )}
+
+                    <div
+                      className={`message-bubble ${
+                        isUser ? "sent" : "received"
+                      }`}
+                      onClick={() => toggleTime(msg.sentAt)}
+                    >
+                      {msg.message}
+
+                      {showTime && (
+                        <div className="message-time">
+                          {new Date(msg.sentAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            <div ref={messagesEndRef} />
           </div>
 
           <div className="chat-input">

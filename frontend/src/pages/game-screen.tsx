@@ -175,7 +175,7 @@ const GameScreen = () => {
         <div className="info-bar">
           <div className="user-info">
             <img
-              src="logo-images/user.png"
+              src="/logo-images/user.png"
               alt="profile-pic"
               style={{
                 width: "45px",
@@ -231,7 +231,7 @@ const GameScreen = () => {
         <div className="info-bar">
           <div className="user-info">
             <img
-              src="logo-images/user.png"
+              src="/logo-images/user.png"
               alt="profile-pic"
               style={{
                 width: "45px",

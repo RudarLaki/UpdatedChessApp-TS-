@@ -1,41 +1,40 @@
+import api from "../context/apiJWT";
+
 const API_URL = "http://localhost:3000/user/";
 
 class UserService {
   getProfile = async (id: string) => {
-    const res = await fetch(`${API_URL}profile/${id}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Failed getting user");
+    try {
+      const res = await api.get(`${API_URL}profile/${id}`);
+      return res.data;
+    } catch (err) {
+      console.error("Error in requestGameState:", err);
+      throw err;
     }
-    return res.json();
   };
 
   getFriends = async (id: string) => {
-    const res = await fetch(`${API_URL}friends/${id}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Failed getting user's friends");
+    try {
+      const res = await api.get(`${API_URL}friends/${id}`);
+      return res.data;
+    } catch (err) {
+      console.error("Error in requestGameState:", err);
+      throw err;
     }
-    return res.json();
   };
 
   addFriend = async (userId: string, friendId: string) => {
-    const res = await fetch(`${API_URL}add-friend`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, friendId }),
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Failed adding friend");
+    try {
+      const res = await api.post(`${API_URL}add-friend`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, friendId }),
+      });
+      return res.data;
+    } catch (err) {
+      console.error("Error in requestGameState:", err);
+      throw err;
     }
-    return res.json();
   };
 }
 

@@ -53,8 +53,6 @@ class AiBotService {
       gameId: crypto.randomUUID(),
       whitePlayerId: userId,
       blackPlayerId: "bot",
-      whitePlayerUsername: whitePlayer?.userName,
-      blackPlayerUsername: "bot",
       whitePlayerRating: whitePlayer?.elo,
       blackPlayerRating: level,
       boardState: boardObject,

@@ -12,6 +12,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.0",
     "@headlessui/react": "^2.2.7",
+    "axios": "^1.11.0",
     "boxicons": "^2.1.4",
     "client": "^0.0.1",
     "immutable": "^5.1.3",

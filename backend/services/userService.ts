@@ -44,6 +44,7 @@ class UserService {
 
   updateUser = async () => {};
   deleteUser = async () => {};
+
   checkUserExists = async (email: string) => {
     const existing = await ddb.send(
       new QueryCommand({

@@ -6,6 +6,7 @@ import {
   type GameState,
   type SerializedPiece,
 } from "../../../sharedGameLogic/types/game";
+import api from "../context/apiJWT";
 
 // const API_URL = "http://51.20.64.148:3000/game/";
 const API_URL = "http://localhost:3000/game/";
@@ -13,24 +14,8 @@ const API_URL = "http://localhost:3000/game/";
 class GameService {
   requestGameState = async (roomId: string) => {
     try {
-      const res = await fetch(`${API_URL}reconnect/${roomId}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!res.ok) {
-        let errorMsg = "Failed to fetch game state";
-        try {
-          const error = await res.json();
-          errorMsg = error.message || errorMsg;
-        } catch {
-          // fallback if response isn't JSON
-        }
-        throw new Error(errorMsg);
-      }
-      const data = await res.json();
-
-      return data;
+      const res = await api.get(`${API_URL}reconnect/${roomId}`);
+      return res.data;
     } catch (err) {
       console.error("Error in requestGameState:", err);
       throw err;
