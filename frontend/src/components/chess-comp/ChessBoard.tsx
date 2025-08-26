@@ -7,8 +7,12 @@ import React, {
 } from "react";
 
 import "../../styles/Board.css";
+import { playSound } from "../../utils/audios";
 
 import {
+  AttackMove,
+  CastleMove,
+  MajorMove,
   MoveFactory,
   PawnPromotionMove,
   type Move,
@@ -195,7 +199,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
     const { from, to } = moveData;
     if (!gameBoard) return;
 
-    const move = MoveFactory.createMove(gameBoard, from, to);
+    const move: Move | undefined = MoveFactory.createMove(gameBoard, from, to);
     const transition = gameBoard.getCurrentPlayer().makeMove(move);
 
     if (move && transition.getMoveStatus() === MoveStatus.DONE) {
@@ -236,6 +240,21 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
       if (onMove == playerColor) setBotMove("");
       if (botOrPlayer == "bot" && playerColor !== onMove)
         movesForBotRef.current.push(indexToSquare(from) + indexToSquare(to));
+      let audio = "";
+
+      if (move instanceof MajorMove) audio = "move-self";
+      if (move instanceof AttackMove) audio = "capture";
+      if (move instanceof CastleMove) audio = "castle";
+      if (move instanceof PawnPromotionMove) audio = "promote";
+      if (newBoard.getCurrentPlayer().isCheck()) {
+        setKingInCheck(
+          newBoard.getCurrentPlayer().getKing().getPiecePosition()
+        );
+        audio = "move-check";
+      } else {
+        setKingInCheck(null);
+      }
+      playSound(audio);
 
       if (newBoard.getCurrentPlayer().isCheckMate()) {
         //

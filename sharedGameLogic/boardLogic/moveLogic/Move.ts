@@ -442,7 +442,11 @@ export class PawnPromotionMove extends Move {
 }
 
 export class MoveFactory {
-  static createMove(board: Board, source: number, destination: number) {
+  static createMove(
+    board: Board,
+    source: number,
+    destination: number
+  ): Move | undefined {
     const move = board
       .getCurrentPlayer()
       .getLegalMoves()
