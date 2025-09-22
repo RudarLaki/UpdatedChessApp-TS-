@@ -74,35 +74,32 @@ npm run preview
 ## 📷 Screenshots  
 _(Add screenshots or GIFs of matchmaking, game UI, and chat here)_  
 
-🔮 Future Improvements
-  
-  ♟️ Chess Features
-  
-   -Checkmate detection & proper game termination  
-   -Undo / Redo buttons (logic for this already implemented)
-   -Resign & Offer Draw buttons
-   -Load PGN files
-   -Position evaluation (who is winning)
-   -ELO rating system
-   -ELO-based matchmaking
-   -Timer improvements
-   -Challenge link for playing with a friend
-   -Profile pages
-   -Puzzles & training mode
-   -Leaderboard & Friends system
-   -Drag-and-drop piece --> Improve current set up
-   -Android release (Google Play)
-  
-  🛠️ Code & Design
-  
-   -Improve TypeScript typing
-   -Better modularization of code
-   -Refined UI/UX design (collaboration with Matija)
-   
-  📷 Advanced Features
-  
-   -Upload a photo of a real chessboard (from white’s perspective) → app reconstructs the board → challenge a friend with that setup
-   -Add historical games from famous players so users can replay or continue them 
+## 🔮 Future Improvements  
+
+### ♟️ Chess Features  
+- [ ] Checkmate detection & proper game termination  
+- [ ] Undo / Redo buttons (logic already implemented, needs UI buttons)  
+- [ ] Resign & Offer Draw buttons  
+- [ ] Load PGN files  
+- [ ] Position evaluation (who is winning)  
+- [ ] ELO rating system  
+- [ ] ELO-based matchmaking  
+- [ ] Timer improvements  
+- [ ] Challenge link for playing with a friend  
+- [ ] Profile pages  
+- [ ] Puzzles & training mode  
+- [ ] Leaderboard & Friends system  
+- [ ] Drag-and-drop piece movement (improve current setup)  
+- [ ] Android release (Google Play)  
+
+### 🛠️ Code & Design  
+- [ ] Improve TypeScript typing  
+- [ ] Better modularization of code  
+- [ ] Refined UI/UX design (collaboration with Matija)  
+
+### 📷 Advanced Features  
+- [ ] Upload a photo of a real chessboard (from white’s perspective) → app reconstructs the board → challenge a friend with that setup  
+- [ ] Add historical games from famous players so users can replay or continue them  
 
 ## 📜 License  
 This project is licensed under the MIT License.  
