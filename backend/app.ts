@@ -12,8 +12,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://rudechess.xyz", "http://localhost:5173"],
-    methods: ["GET", "POST", "PUT", "DESTROY"],
+    origin: ["https://rudechess.xyz", "http://localhost:5173"],
+    methods: ["GET", "POST", "PUT"],
   })
 );
 
