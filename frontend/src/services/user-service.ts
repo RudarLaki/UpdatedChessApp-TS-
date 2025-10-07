@@ -1,6 +1,7 @@
 import api from "../context/apiJWT";
 
-const API_URL = "http://localhost:3000/user/";
+const API_URL = "/user/";
+// const API_URL = "http://localhost:3000/user/";
 
 class UserService {
   getProfile = async (id: string) => {

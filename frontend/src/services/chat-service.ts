@@ -1,7 +1,8 @@
 import { io, Socket } from "socket.io-client";
 import api from "../context/apiJWT";
 
-const API_URL = "http://localhost:3000/chat/";
+// const API_URL = "http://localhost:3000/chat/";
+const API_URL = "/chat/";
 
 class ChatService {
   socket: Socket | null = null;

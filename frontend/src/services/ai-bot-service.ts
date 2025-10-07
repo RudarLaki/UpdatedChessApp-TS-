@@ -1,5 +1,5 @@
-// const API_URL = "http://51.20.64.148:3000/ai-game/";
-const API_URL = "http://localhost:3000/ai-game/";
+const API_URL = "/ai-game/";
+// const API_URL = "http://localhost:3000/ai-game/";
 import api from "../context/apiJWT";
 
 class AiBotService {
