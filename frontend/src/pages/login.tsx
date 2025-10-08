@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../styles/Auth.css";
 import { authService } from "../services/auth-service";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { LoginRequest } from "../../../sharedGameLogic/types/auth";
 
 const Login = () => {
@@ -66,9 +66,9 @@ const Login = () => {
           <div className="form-link">
             <span>
               Don't have an account?{" "}
-              <a href="#" className="link signup-link">
-                Signup
-              </a>
+              <Link to="/register" className="link signup-link">
+                Login
+              </Link>
             </span>
           </div>
         </div>

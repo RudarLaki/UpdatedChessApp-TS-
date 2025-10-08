@@ -63,7 +63,6 @@ const GameScreen = () => {
   useEffect(() => {
     if (botOrPlayer !== "player") return;
     socketService.connect("https://rudechess.xyz");
-
     // socketService.connect("http://localhost:3000");
 
     const storedRoomId = localStorage.getItem("roomId");

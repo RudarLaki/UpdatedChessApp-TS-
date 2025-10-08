@@ -1,7 +1,7 @@
 // api.ts
 import axios from "axios";
 
-const API_URL = "https://13.60.230.183";
+const API_URL = "https://16.171.43.90";
 
 // create axios instance
 const api = axios.create({
