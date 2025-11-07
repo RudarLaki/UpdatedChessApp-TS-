@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../styles/Auth.css";
 import { authService } from "../services/auth-service";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import type { RegisterRequest } from "../../../sharedGameLogic/types/auth";
 
 const Register = () => {
@@ -58,7 +58,7 @@ const Register = () => {
           <div className="form-link">
             <span>
               Already have an account?{" "}
-              <Link to="/login" className="link login-link">
+              <Link to="/" className="link login-link">
                 Login
               </Link>
             </span>
