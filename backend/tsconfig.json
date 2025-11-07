@@ -15,6 +15,6 @@
       "@shared/*": ["../sharedGameLogic/*"]
     }
   },
-  "include": ["backend/**/*", "../sharedGameLogic/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["./**/*", "../sharedGameLogic/**/*"],
+  "exclude": ["node_modules", "../frontend"]
 }

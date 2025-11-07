@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../styles/Auth.css";
 import { authService } from "../services/auth-service";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { RegisterRequest } from "../../../sharedGameLogic/types/auth";
 
 const Register = () => {
